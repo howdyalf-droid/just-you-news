@@ -24,12 +24,12 @@ topics:
     color: "#27ae60"
 
   - name: "Artificial Intelligence"
-    keywords: ["artificial intelligence", "AI", "machine learning", "ChatGPT", "OpenAI", "Anthropic", "LLM", "deep learning", "generative AI"]
+    keywords: ["artificial intelligence", "machine learning", "ChatGPT", "OpenAI", "Anthropic", "large language model", "LLM", "deep learning", "generative AI", "neural network", "Google DeepMind", "Gemini", "Claude AI", "AI model", "AI safety"]
     guardian_sections: ["technology"]
     color: "#8e44ad"
 
   - name: "Finance & Markets"
-    keywords: ["stock market", "shares", "ASX", "S&P 500", "interest rates", "inflation", "RBA", "Federal Reserve", "economy", "recession", "GDP"]
+    keywords: ["stock market", "share market", "ASX", "S&P 500", "Nasdaq", "interest rates", "inflation", "RBA", "Reserve Bank", "Federal Reserve", "recession", "GDP", "sharemarket", "earnings report", "IPO", "cryptocurrency", "bitcoin", "hedge fund", "Wall Street", "central bank"]
     guardian_sections: ["business", "money"]
     color: "#d35400"
 
@@ -102,9 +102,9 @@ appearance:
   accent: "#1a1a2e"             # Main accent colour (headers, links)
   background: "#f8f6f1"         # Page background
   card_background: "#ffffff"    # Article card background
-  font_body: "DM Sans"             # Body text font (Google Fonts name)
-  font_heading: "Outfit"  # Heading font
-  font_size: "19px"             # Base font size
+  font_body: "DM Sans"            # Body text font (Google Fonts name)
+  font_heading: "Outfit"           # Heading font
+  font_size: "19px"               # Base font size
 
 ## SCHEDULE (set in GitHub Actions — see .github/workflows/refresh.yml)
 ## 7:00am and 1:00pm AEDT = 20:00 and 02:00 UTC
