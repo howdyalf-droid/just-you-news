@@ -34,6 +34,8 @@ APPEARANCE = config["appearance"]
 FOLLOWING = config.get("following", [])
 GUARDIAN_API_KEY = os.environ.get("GUARDIAN_API_KEY", "")
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
+GITHUB_REPO = os.environ.get("GITHUB_REPOSITORY", "howdyalf-droid/just-you-news")
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -81,6 +83,71 @@ def get_image(entry):
         if enc.get("type", "").startswith("image"):
             return enc.get("url")
     return None
+
+
+# ── GitHub Issues Feedback ────────────────────────────────────────────────────
+
+def fetch_feedback_blocklist():
+    """Read open GitHub Issues tagged 'digest-feedback' and build a blocklist."""
+    blocklist = {}  # article_id -> list of topics to block from
+    if not GITHUB_TOKEN:
+        return blocklist
+    try:
+        headers = {
+            "Authorization": f"Bearer {GITHUB_TOKEN}",
+            "Accept": "application/vnd.github+json",
+        }
+        url = f"https://api.github.com/repos/{GITHUB_REPO}/issues"
+        params = {"labels": "digest-feedback", "state": "open", "per_page": 100}
+        r = requests.get(url, headers=headers, params=params, timeout=10)
+        issues = r.json()
+        if not isinstance(issues, list):
+            return blocklist
+        for issue in issues:
+            body = issue.get("body", "")
+            # Parse article_id and blocked topic from issue body
+            art_id = None
+            blocked_topic = None
+            for line in body.split("\n"):
+                if line.startswith("article_id:"):
+                    art_id = line.split(":", 1)[1].strip()
+                if line.startswith("block_from_topic:"):
+                    blocked_topic = line.split(":", 1)[1].strip()
+            if art_id:
+                if art_id not in blocklist:
+                    blocklist[art_id] = []
+                if blocked_topic:
+                    blocklist[art_id].append(blocked_topic)
+                else:
+                    blocklist[art_id].append("__all__")
+        print(f"  Feedback blocklist: {len(blocklist)} articles blocked")
+    except Exception as e:
+        print(f"  Feedback fetch error: {e}")
+    return blocklist
+
+def create_feedback_label():
+    """Ensure the digest-feedback label exists in the repo."""
+    if not GITHUB_TOKEN:
+        return
+    try:
+        headers = {
+            "Authorization": f"Bearer {GITHUB_TOKEN}",
+            "Accept": "application/vnd.github+json",
+        }
+        # Check if label exists
+        r = requests.get(
+            f"https://api.github.com/repos/{GITHUB_REPO}/labels/digest-feedback",
+            headers=headers, timeout=10
+        )
+        if r.status_code == 404:
+            requests.post(
+                f"https://api.github.com/repos/{GITHUB_REPO}/labels",
+                headers=headers,
+                json={"name": "digest-feedback", "color": "e74c3c", "description": "Feedback from news digest"},
+                timeout=10
+            )
+    except Exception as e:
+        print(f"  Label creation error: {e}")
 
 # ── Guardian API ──────────────────────────────────────────────────────────────
 
@@ -306,6 +373,7 @@ def render_article_card(article, show_image=True):
 
     thumb_up = f'<button class="thumb thumb-up" onclick="thumbs(\'{article["id"]}\', 1)" title="More like this">↑</button>'
     thumb_down = f'<button class="thumb thumb-down" onclick="thumbs(\'{article["id"]}\', -1)" title="Less like this">↓</button>'
+    feedback_btn = f'<button class="thumb feedback-btn" onclick="openFeedback(\'{article["id"]}\', \'{escape(article["title"][:60])}\', \'{escape(article.get("current_topic", ""))}\', \'{escape(article["url"])}\')" title="Wrong section?">⚑ Wrong section?</button>'
 
     return f"""
 <article class="card" id="card-{article['id']}">
@@ -318,7 +386,7 @@ def render_article_card(article, show_image=True):
     </h3>
     {f'<p class="card-summary">{summary}</p>' if summary else ''}
     <div class="card-actions">
-      {thumb_up}{thumb_down}
+      {thumb_up}{thumb_down}{feedback_btn}
     </div>
   </div>
 </article>"""
@@ -335,6 +403,8 @@ def build_html(topic_articles, following_articles, trending, all_articles):
         articles = topic_articles.get(topic["name"], [])
         if not articles:
             continue
+        for a in articles:
+            a["current_topic"] = topic["name"]
         cards = "".join(render_article_card(a) for a in articles)
         color = topic.get("color", app["accent"])
         topic_sections_html += f"""
@@ -600,6 +670,125 @@ body {{
 .trend-item strong {{ color: var(--accent); }}
 .trend-item em {{ color: var(--text-muted); font-style: normal; font-size: 0.75rem; }}
 
+
+/* ── FEEDBACK MODAL ── */
+.feedback-btn {{
+  font-size: 0.72rem;
+  margin-left: auto;
+  color: var(--text-muted);
+  border-color: transparent;
+}}
+.feedback-btn:hover {{ color: #e74c3c; border-color: #e74c3c; background: #fce4ec; }}
+.modal-overlay {{
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}}
+.modal-overlay.open {{ display: flex; }}
+.modal {{
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+}}
+.modal h3 {{
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+  color: var(--text);
+}}
+.modal-article-title {{
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  font-style: italic;
+  line-height: 1.4;
+}}
+.modal-label {{
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  display: block;
+  margin-bottom: 0.5rem;
+}}
+.modal-options {{
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}}
+.modal-option {{
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text);
+  cursor: pointer;
+}}
+.modal-option input {{ margin-top: 0.2rem; accent-color: #e74c3c; }}
+.modal-select {{
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  display: none;
+}}
+.modal-other {{
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  display: none;
+  resize: vertical;
+  min-height: 60px;
+}}
+.modal-actions {{ display: flex; gap: 0.75rem; justify-content: flex-end; }}
+.btn-cancel {{
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 0.4rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+}}
+.btn-submit {{
+  background: #e74c3c;
+  border: none;
+  color: white;
+  padding: 0.4rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+}}
+.btn-submit:hover {{ background: #c0392b; }}
+.feedback-success {{
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
+  color: #2e7d32;
+}}
+
 /* ── FOOTER ── */
 .site-footer {{
   text-align: center;
@@ -639,6 +828,43 @@ body {{
   {topic_sections_html}
 </main>
 
+<!-- ── FEEDBACK MODAL ── -->
+<div class="modal-overlay" id="feedbackModal" onclick="closeFeedbackOnOverlay(event)">
+  <div class="modal">
+    <h3>📋 Send feedback</h3>
+    <p class="modal-article-title" id="modalArticleTitle"></p>
+    <span class="modal-label">What's the issue?</span>
+    <div class="modal-options">
+      <label class="modal-option">
+        <input type="radio" name="feedbackType" value="wrong_topic" onchange="onFeedbackTypeChange(this)">
+        Wrong topic — this shouldn't appear here
+      </label>
+      <label class="modal-option">
+        <input type="radio" name="feedbackType" value="not_relevant" onchange="onFeedbackTypeChange(this)">
+        Not relevant to any of my topics
+      </label>
+      <label class="modal-option">
+        <input type="radio" name="feedbackType" value="repetitive" onchange="onFeedbackTypeChange(this)">
+        Too repetitive — I've seen this story already
+      </label>
+      <label class="modal-option">
+        <input type="radio" name="feedbackType" value="other" onchange="onFeedbackTypeChange(this)">
+        Other
+      </label>
+    </div>
+    <select class="modal-select" id="topicRedirect">
+      <option value="">— Select correct topic (optional) —</option>
+            <option value="US Politics">US Politics</option>      <option value="Australian Politics">Australian Politics</option>      <option value="Australian News">Australian News</option>      <option value="Artificial Intelligence">Artificial Intelligence</option>      <option value="Finance & Markets">Finance & Markets</option>      <option value="Film & TV">Film & TV</option>
+      <option value="none">None of my topics</option>
+    </select>
+    <textarea class="modal-other" id="feedbackOther" placeholder="Tell me more..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeFeedback()">Cancel</button>
+      <button class="btn-submit" onclick="submitFeedback()">Send feedback</button>
+    </div>
+  </div>
+</div>
+
 <footer class="site-footer">
   Built with Claude · Sources: The Guardian, ABC News, BBC, NPR, WSJ
   · Last updated {time_str} AEDT
@@ -646,6 +872,7 @@ body {{
 
 <script>
 // ── Interaction tracking ──────────────────────────────────────────────────
+// Feedback token injected at build time
 const STORAGE_KEY = 'newsdigest_interactions';
 
 function loadInteractions() {{
@@ -691,6 +918,108 @@ function updateThumbUI(articleId, value) {{
 function toggleTheme() {{
   document.documentElement.classList.toggle('dark-theme');
   localStorage.setItem('theme', document.documentElement.classList.contains('dark-theme') ? 'dark' : 'light');
+}}
+
+
+// ── Feedback modal ────────────────────────────────────────────────────────
+let currentFeedback = {{}};
+
+function openFeedback(articleId, title, currentTopic, url) {{
+  currentFeedback = {{ articleId, title, currentTopic, url }};
+  document.getElementById('modalArticleTitle').textContent = title + (currentTopic ? ' (in: ' + currentTopic + ')' : '');
+  document.querySelectorAll('input[name="feedbackType"]').forEach(r => r.checked = false);
+  document.getElementById('topicRedirect').style.display = 'none';
+  document.getElementById('topicRedirect').value = '';
+  document.getElementById('feedbackOther').style.display = 'none';
+  document.getElementById('feedbackOther').value = '';
+  document.getElementById('feedbackModal').classList.add('open');
+}}
+
+function closeFeedback() {{
+  document.getElementById('feedbackModal').classList.remove('open');
+}}
+
+function closeFeedbackOnOverlay(e) {{
+  if (e.target === document.getElementById('feedbackModal')) closeFeedback();
+}}
+
+function onFeedbackTypeChange(radio) {{
+  document.getElementById('topicRedirect').style.display = radio.value === 'wrong_topic' ? 'block' : 'none';
+  document.getElementById('feedbackOther').style.display = radio.value === 'other' ? 'block' : 'none';
+}}
+
+async function submitFeedback() {{
+  const feedbackType = document.querySelector('input[name="feedbackType"]:checked')?.value;
+  if (!feedbackType) {{ alert('Please select an issue type.'); return; }}
+
+  const redirectTopic = document.getElementById('topicRedirect').value;
+  const otherText = document.getElementById('feedbackOther').value;
+
+  const labels = ['digest-feedback'];
+  let title = '';
+  let body = '';
+
+  if (feedbackType === 'wrong_topic') {{
+    title = `[Wrong topic] ${{currentFeedback.title.substring(0, 60)}}`;
+    body = `**Article appeared in wrong topic section.**
+
+article_id: ${{currentFeedback.articleId}}
+appeared_in_topic: ${{currentFeedback.currentTopic}}
+block_from_topic: ${{currentFeedback.currentTopic}}
+${{redirectTopic && redirectTopic !== 'none' ? 'suggest_topic: ' + redirectTopic : ''}}
+
+**Article:** [${{currentFeedback.title}}](${{currentFeedback.url}})`;
+  }} else if (feedbackType === 'not_relevant') {{
+    title = `[Not relevant] ${{currentFeedback.title.substring(0, 60)}}`;
+    body = `**Article not relevant to any topic.**
+
+article_id: ${{currentFeedback.articleId}}
+block_from_topic: __all__
+
+**Article:** [${{currentFeedback.title}}](${{currentFeedback.url}})`;
+  }} else if (feedbackType === 'repetitive') {{
+    title = `[Repetitive] ${{currentFeedback.title.substring(0, 60)}}`;
+    body = `**Article is too repetitive / already seen.**
+
+article_id: ${{currentFeedback.articleId}}
+block_from_topic: ${{currentFeedback.currentTopic}}
+
+**Article:** [${{currentFeedback.title}}](${{currentFeedback.url}})`;
+  }} else {{
+    title = `[Feedback] ${{currentFeedback.title.substring(0, 60)}}`;
+    body = `**Other feedback.**
+
+article_id: ${{currentFeedback.articleId}}
+appeared_in_topic: ${{currentFeedback.currentTopic}}
+
+**Note:** ${{otherText}}
+
+**Article:** [${{currentFeedback.title}}](${{currentFeedback.url}})`;
+  }}
+
+  try {{
+    const resp = await fetch(
+      'https://api.github.com/repos/howdyalf-droid/just-you-news/issues',
+      {{
+        method: 'POST',
+        headers: {{
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer __FEEDBACK_TOKEN_PLACEHOLDER__',
+        }},
+        body: JSON.stringify({{ title, body, labels }}),
+      }}
+    );
+
+    if (resp.ok) {{
+      const modal = document.querySelector('.modal');
+      modal.innerHTML = '<div class="feedback-success">✓ Feedback sent — thanks! The next digest refresh will learn from this.</div>';
+      setTimeout(closeFeedback, 2000);
+    }} else {{
+      alert('Could not send feedback. Please try again later.');
+    }}
+  }} catch(e) {{
+    alert('Could not send feedback — check your connection.');
+  }}
 }}
 
 // ── Active nav highlighting ───────────────────────────────────────────────
@@ -775,12 +1104,18 @@ def main():
     # Load interaction scores
     interactions = load_interactions() if INTERACTIONS_PATH.exists() else {}
 
+    # Load feedback blocklist from GitHub Issues
+    create_feedback_label()
+    blocklist = fetch_feedback_blocklist()
+
     # Assign articles to topics
     topic_articles = {}
     for topic in TOPICS:
         matches = [
             a for a in all_articles
             if matches_topic(a["title"] + " " + a.get("summary", ""), topic)
+            and topic["name"] not in blocklist.get(a["id"], [])
+            and "__all__" not in blocklist.get(a["id"], [])
         ]
         # Score and sort
         matches.sort(
@@ -806,6 +1141,9 @@ def main():
     # Build HTML
     html = build_html(topic_articles, following_articles, trending, all_articles)
 
+    # Inject GitHub feedback token at build time
+    feedback_token = os.environ.get("GITHUB_TOKEN", "")
+    html = html.replace("__FEEDBACK_TOKEN_PLACEHOLDER__", feedback_token)
     OUTPUT_PATH.write_text(html, encoding="utf-8")
     print(f"✅ Digest built → {OUTPUT_PATH}")
     print(f"   Following: {len(following_articles)} articles")
