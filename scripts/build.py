@@ -430,8 +430,8 @@ def build_html(topic_articles, following_articles, trending, all_articles):
     trending_html = ""
     if trending:
         trending_items = "".join(
-            f'<span class="trend-item"><strong>{escape(t["term"])}</strong> '
-            f'<em>{t["count"]} sources</em></span>'
+            f'<a class="trend-item" href="https://news.google.com/search?q={requests.utils.quote(t["term"])}" target="_blank" rel="noopener"><strong>{escape(t["term"])}</strong> '
+            f'<em>{t["count"]} sources</em></a>'
             for t in trending[:8]
         )
         trending_html = f"""
@@ -666,7 +666,11 @@ body {{
   padding: 0.3rem 0.75rem;
   border-radius: 20px;
   color: var(--text);
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+  display: inline-block;
 }}
+.trend-item:hover {{ background: var(--border); border-color: var(--accent); }}
 .trend-item strong {{ color: var(--accent); }}
 .trend-item em {{ color: var(--text-muted); font-style: normal; font-size: 0.75rem; }}
 
@@ -999,12 +1003,11 @@ appeared_in_topic: ${{currentFeedback.currentTopic}}
 
   try {{
     const resp = await fetch(
-      'https://api.github.com/repos/howdyalf-droid/just-you-news/issues',
+      'https://digest-feedback.howdyalf-droid.workers.dev',
       {{
         method: 'POST',
         headers: {{
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer __FEEDBACK_TOKEN_PLACEHOLDER__',
         }},
         body: JSON.stringify({{ title, body, labels }}),
       }}
@@ -1141,9 +1144,6 @@ def main():
     # Build HTML
     html = build_html(topic_articles, following_articles, trending, all_articles)
 
-    # Inject GitHub feedback token at build time
-    feedback_token = os.environ.get("GITHUB_TOKEN", "")
-    html = html.replace("__FEEDBACK_TOKEN_PLACEHOLDER__", feedback_token)
     OUTPUT_PATH.write_text(html, encoding="utf-8")
     print(f"✅ Digest built → {OUTPUT_PATH}")
     print(f"   Following: {len(following_articles)} articles")
