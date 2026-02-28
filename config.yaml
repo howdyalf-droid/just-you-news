@@ -1,0 +1,110 @@
+## ─────────────────────────────────────────────────
+## NEWS DIGEST — CONFIG
+## Edit this file to customise your digest.
+## Changes take effect at the next scheduled refresh.
+## ─────────────────────────────────────────────────
+
+## TOPICS
+## The order here is the order they appear on the page.
+## Add or remove topics freely.
+topics:
+  - name: "US Politics"
+    keywords: ["US politics", "Trump", "Congress", "Senate", "White House", "Biden", "Democrat", "Republican", "Washington"]
+    guardian_sections: ["us-news", "politics"]
+    color: "#c0392b"
+
+  - name: "Australian Politics"
+    keywords: ["Australian politics", "Labor", "Liberal", "Albanese", "Dutton", "parliament", "federal government", "Canberra"]
+    guardian_sections: ["australia-news"]
+    color: "#2980b9"
+
+  - name: "Australian News"
+    keywords: ["Australia", "Melbourne", "Sydney", "Brisbane", "NSW", "Victoria", "Queensland"]
+    guardian_sections: ["australia-news"]
+    color: "#27ae60"
+
+  - name: "Artificial Intelligence"
+    keywords: ["artificial intelligence", "AI", "machine learning", "ChatGPT", "OpenAI", "Anthropic", "LLM", "deep learning", "generative AI"]
+    guardian_sections: ["technology"]
+    color: "#8e44ad"
+
+  - name: "Finance & Markets"
+    keywords: ["stock market", "shares", "ASX", "S&P 500", "interest rates", "inflation", "RBA", "Federal Reserve", "economy", "recession", "GDP"]
+    guardian_sections: ["business", "money"]
+    color: "#d35400"
+
+  - name: "Film & TV"
+    keywords: ["movie", "film", "television", "streaming", "Netflix", "cinema", "Oscar", "Emmy", "series", "documentary"]
+    guardian_sections: ["film", "tv-and-radio", "culture"]
+    color: "#16a085"
+
+## SOURCES
+## Add new RSS sources here. They appear automatically in the next refresh.
+## To remove a source, delete its entry or comment it out with #
+sources:
+  - name: "ABC News Australia"
+    url: "https://www.abc.net.au/news/feed/51120/rss.xml"
+    country: "AU"
+
+  - name: "ABC Australia - Politics"
+    url: "https://www.abc.net.au/news/feed/2206/rss.xml"
+    country: "AU"
+
+  - name: "BBC News"
+    url: "https://feeds.bbci.co.uk/news/rss.xml"
+    country: "UK"
+
+  - name: "BBC Business"
+    url: "https://feeds.bbci.co.uk/news/business/rss.xml"
+    country: "UK"
+
+  - name: "NPR News"
+    url: "https://feeds.npr.org/1001/rss.xml"
+    country: "US"
+
+  - name: "The Guardian - World"
+    url: "https://www.theguardian.com/world/rss"
+    country: "UK"
+
+## WSJ (headlines only - full content requires login)
+  - name: "WSJ - World News"
+    url: "https://feeds.content.dowjones.io/public/rss/mw_realtimeheadlines"
+    country: "US"
+    headlines_only: true
+
+## ADD MORE SOURCES BELOW — just copy the format above:
+## - name: "Source Name"
+##   url: "https://example.com/feed.rss"
+##   country: "AU"
+
+## DIGEST SETTINGS
+digest:
+  stories_per_topic: 5          # How many stories to show per topic
+  summary_sentences: 3          # Sentences in each AI summary
+  show_trending: true           # Show the trending topics section
+  trending_min_sources: 2       # Story must appear in this many sources to trend
+  max_article_age_hours: 24     # Only show articles from last N hours (afternoon refresh uses 12)
+
+## FOLLOWING — Ongoing stories you want tracked
+## Add a story here and it appears at the top of every digest until you remove it.
+## Format: just a list of search terms
+following: []
+## Example:
+## following:
+##   - "Erin Patterson mushroom trial"
+##   - "federal budget 2025"
+##   - "Gaza ceasefire"
+
+## APPEARANCE
+## Hex colours and font choices. Change these to customise the look.
+appearance:
+  theme: "light"                # "light" or "dark"
+  accent: "#1a1a2e"             # Main accent colour (headers, links)
+  background: "#f8f6f1"         # Page background
+  card_background: "#ffffff"    # Article card background
+  font_body: "Lora"             # Body text font (Google Fonts name)
+  font_heading: "Playfair Display"  # Heading font
+  font_size: "16px"             # Base font size
+
+## SCHEDULE (set in GitHub Actions — see .github/workflows/refresh.yml)
+## 7:00am and 1:00pm AEDT = 20:00 and 02:00 UTC

@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>News Digest — Saturday, 1 March 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f8f6f1;
+  --card-bg: #ffffff;
+  --accent: #1a1a2e;
+  --text: #1a1a1a;
+  --text-muted: #666;
+  --border: #e5e2dc;
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'Lora', Georgia, serif;
+  --font-size: 16px;
+  --radius: 8px;
+  --shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+.dark-theme {
+  --bg: #141414;
+  --card-bg: #1e1e1e;
+  --accent: #e8d5b0;
+  --text: #e8e8e8;
+  --text-muted: #999;
+  --border: #2a2a2a;
+  --shadow: 0 2px 12px rgba(0,0,0,0.3);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: var(--font-size); scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+.site-header {
+  background: var(--accent);
+  color: var(--bg);
+  padding: 1.5rem 2rem 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.15);
+}
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.75rem;
+}
+.site-title {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.header-date { font-size: 0.85rem; opacity: 0.8; }
+.site-nav {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.nav-link {
+  color: var(--bg);
+  text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.75;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  transition: opacity 0.15s, background 0.15s;
+}
+.nav-link:hover { opacity: 1; background: rgba(255,255,255,0.15); }
+.theme-toggle {
+  margin-left: auto;
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: var(--bg);
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-family: var(--font-body);
+}
+.main-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+.topic-section { margin-bottom: 3rem; }
+.section-heading {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--topic-color, var(--accent));
+  border-bottom: 2px solid var(--topic-color, var(--accent));
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.01em;
+}
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+.card:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,0,0,0.12); }
+.card-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  background: var(--border);
+}
+.card-body { padding: 1rem; flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
+.card-meta { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.source-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+}
+.paywall-badge {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+}
+.time-ago { font-size: 0.72rem; color: var(--text-muted); margin-left: auto; }
+.card-title { font-family: var(--font-heading); font-size: 0.95rem; line-height: 1.35; flex: 1; }
+.card-title a { color: var(--text); text-decoration: none; }
+.card-title a:hover { color: var(--accent); }
+.card-summary { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; }
+.card-actions { display: flex; gap: 0.5rem; margin-top: auto; padding-top: 0.5rem; border-top: 1px solid var(--border); }
+.thumb {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  transition: all 0.15s;
+}
+.thumb:hover { background: var(--border); color: var(--text); }
+.thumb.active-up { background: #e8f5e9; color: #2e7d32; border-color: #2e7d32; }
+.thumb.active-down { background: #fce4ec; color: #c62828; border-color: #c62828; }
+.following-section {
+  background: color-mix(in srgb, #e74c3c 5%, var(--bg));
+  border-left: 4px solid #e74c3c;
+  padding-left: 1rem;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+.following-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.following-tag {
+  font-size: 0.75rem;
+  background: #e74c3c;
+  color: white;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  font-weight: 600;
+}
+.trending-section {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin-bottom: 2.5rem;
+}
+.trending-heading { border-color: #e67e22; color: #e67e22; }
+.trending-tags { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.75rem; }
+.trend-item {
+  font-size: 0.82rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  color: var(--text);
+}
+.trend-item strong { color: var(--accent); }
+.trend-item em { color: var(--text-muted); font-style: normal; font-size: 0.75rem; }
+.site-footer {
+  text-align: center;
+  padding: 2rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+  margin-top: 3rem;
+}
+@media (max-width: 600px) {
+  .site-header { padding: 1rem; position: static; }
+  .header-top { flex-direction: column; gap: 0.25rem; }
+  .main-content { padding: 1rem; }
+  .cards-grid { grid-template-columns: 1fr; }
+  .section-heading { font-size: 1.1rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-top">
+    <div class="site-title">Your News Digest</div>
+    <div class="header-date">Saturday, 1 March 2025 · 7:04 AM AEDT</div>
+  </div>
+  <nav class="site-nav">
+    <a href="#us-politics" class="nav-link">US Politics</a>
+    <a href="#aus-politics" class="nav-link">Aus Politics</a>
+    <a href="#aus-news" class="nav-link">Aus News</a>
+    <a href="#ai" class="nav-link">AI</a>
+    <a href="#finance" class="nav-link">Finance</a>
+    <a href="#film-tv" class="nav-link">Film & TV</a>
+    <button class="theme-toggle" onclick="toggleTheme()">◐ Theme</button>
+  </nav>
+</header>
+
+<main class="main-content">
+
+  <!-- FOLLOWING -->
+  <section class="topic-section following-section" id="following">
+    <h2 class="section-heading" style="--topic-color:#e74c3c">📌 Following</h2>
+    <div class="following-tags">
+      <span class="following-tag">Erin Patterson mushroom trial</span>
+      <span class="following-tag">Federal budget 2025</span>
+    </div>
+    <div class="cards-grid">
+      <article class="card" id="card-follow1">
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="source-badge">ABC News</span>
+            <span class="time-ago">2h ago</span>
+          </div>
+          <h3 class="card-title"><a href="#" target="_blank">Erin Patterson trial: Prosecution outlines timeline of deadly mushroom lunch</a></h3>
+          <p class="card-summary">Prosecutors have presented a detailed timeline of the events leading up to the fatal meal at Patterson's Leongatha home in July 2023. Three family members died after consuming a beef wellington containing death cap mushrooms. The defence maintains Patterson did not knowingly use poisonous ingredients.</p>
+          <div class="card-actions">
+            <button class="thumb thumb-up" onclick="thumbs('follow1', 1)" title="More like this">↑</button>
+            <button class="thumb thumb-down" onclick="thumbs('follow1', -1)" title="Less like this">↓</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- TRENDING -->
+  <section class="trending-section">
+    <h2 class="section-heading trending-heading">🔥 Trending across sources</h2>
+    <div class="trending-tags">
+      <span class="trend-item"><strong>Trump</strong> <em>5 sources</em></span>
+      <span class="trend-item"><strong>Gaza</strong> <em>4 sources</em></span>
+      <span class="trend-item"><strong>Albanese</strong> <em>3 sources</em></span>
+      <span class="trend-item"><strong>OpenAI</strong> <em>3 sources</em></span>
+      <span class="trend-item"><strong>Reserve Bank</strong> <em>2 sources</em></span>
+      <span class="trend-item"><strong>Netflix</strong> <em>2 sources</em></span>
+    </div>
+  </section>
+
+  <!-- US POLITICS -->
+  <section class="topic-section" id="us-politics">
+    <h2 class="section-heading" style="--topic-color:#c0392b">US Politics</h2>
+    <div class="cards-grid">
+
+      <article class="card" id="card-us1">
+        <img class="card-img" src="https://i.guim.co.uk/img/media/sample-congress.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="source-badge">The Guardian</span>
+            <span class="time-ago">1h ago</span>
+          </div>
+          <h3 class="card-title"><a href="#" target="_blank">Senate Democrats block Republican spending bill as shutdown deadline looms</a></h3>
+          <p class="card-summary">Senate Democrats have united to block a Republican-backed continuing resolution that would fund the government through September. The move raises the prospect of a partial government shutdown this weekend. Negotiations continue as both sides seek a compromise before the Friday midnight deadline.</p>
+          <div class="card-actions">
+            <button class="thumb thumb-up" onclick="thumbs('us1', 1)" title="More like this">↑</button>
+            <button class="thumb thumb-down" onclick="thumbs('us1', -1)" title="Less like this">↓</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" id="card-us2">
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="source-badge">BBC</span>
+            <span class="time-ago">3h ago</span>
+          </div>
+          <h3 class="card-title"><a href="#" target="_blank">Trump signs executive order directing federal agencies to cut staff by 10%</a></h3>
+          <p class="card-summary">President Trump has signed a broad executive order requiring every federal agency to reduce staffing levels by at least 10% within 90 days. The order is expected to face immediate legal challenges from federal employee unions. DOGE officials say the cuts are essential to reduce what they call government bloat.</p>
+          <div class="card-actions">
+            <button class="thumb thumb-up" onclick="thumbs('us2', 1)" title="More like this">↑</button>
+            <button class="thumb thumb-down" onclick="thumbs('us2', -1)" title="Less like this">↓</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" id="card-us3">
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="source-badge">WSJ</span>
+            <span class="paywall-badge">Headline only</span>
+            <span class="time-ago">4h ago</span>
+          </div>
+          <h3 class="card-title"><a href="#" target="_blank">Fed Chair Powell signals rates on hold through mid-year amid trade uncertainty</a></h3>
+          <div class="card-actions">
+            <button class="thumb thumb-up" onclick="thumbs('us3', 1)" title="More like this">↑</button>
+            <button class="thumb thumb-down" onclick="thumbs('us3', -1)" title="Less like this">↓</button>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- AUS POLITICS -->
+  <section class="topic-section" id="aus-politics">
+    <h2 class="section-heading" style="--topic-color:#2980b9">Australian Politics</h2>
+    <div class="cards-grid">
+
+      <article class="card" id="card-aus1">
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="source-badge">ABC News</span>
+            <span class="time-ago">2h ago</span>
+          </div>
+          <h3 class="card-title"><a href="#" target="_blank">Albanese government announces $1.2bn regional health package ahead of election</a></h3>
+          <p class="card-summary">Prime Minister Anthony Albanese has unveiled a $1.2 billion investment in regional and rural healthcare infrastructure, including 40 new hospital upgrades and expanded telehealth services. The announcement comes six weeks before the expected federal election date. Opposition leader Peter Dutton called the timing politically motivated.</p>
+          <div class="card-actions">
+            <button class="thumb thumb-up" onclick="thumbs('aus1', 1)" title="More like this">↑</button>
+            <button class="thumb thumb-down" onclick="thumbs('aus1', -1)" title="Less like this">↓</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" id="card-aus2">
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="source-badge">The Guardian</span>
+            <span class="time-ago">5h ago</span>
+          </div>
+          <h3 class="card-title"><a href="#" target="_blank">Victoria pushes ahead with housing density reforms despite local council opposition</a></h3>
+          <p class="card-summary">The Victorian government has confirmed it will proceed with controversial planning reforms allowing six-storey apartment buildings near train stations, overriding objections from more than 20 councils. Housing Minister Sonya Kilkenny says the state needs 800,000 new homes by 2051 to meet demand. Implementation begins in July.</p>
+          <div class="card-actions">
+            <button class="thumb thumb-up" onclick="thumbs('aus2', 1)" title="More like this">↑</button>
+            <button class="thumb thumb-down" onclick="thumbs('aus2', -1)" title="Less like this">↓</button>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- AI -->
+  <section class="topic-section" id="ai">
+    <h2 class="section-heading" style="--topic-color:#8e44ad">Artificial Intelligence</h2>
+    <div class="cards-grid">
+
+      <article class="card" id="card-ai1">
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="source-badge">The Guardian</span>
+            <span class="time-ago">1h ago</span>
+          </div>
+          <h3 class="card-title"><a href="#" target="_blank">OpenAI releases GPT-5 with major reasoning improvements, claims human-level performance on benchmarks</a></h3>
+          <p class="card-summary">OpenAI has launched GPT-5, claiming significant advances in multi-step reasoning and scientific problem-solving compared to its predecessor. The model performs at or above human expert level on several standardised benchmarks across medicine, law, and mathematics. Critics note benchmarks don't necessarily reflect real-world performance.</p>
+          <div class="card-actions">
+            <button class="thumb thumb-up" onclick="thumbs('ai1', 1)" title="More like this">↑</button>
+            <button class="thumb thumb-down" onclick="thumbs('ai1', -1)" title="Less like this">↓</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" id="card-ai2">
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="source-badge">BBC</span>
+            <span class="time-ago">4h ago</span>
+          </div>
+          <h3 class="card-title"><a href="#" target="_blank">EU AI Act enforcement begins: companies face audits and potential billion-euro fines</a></h3>
+          <p class="card-summary">The European Union has begun active enforcement of the AI Act, with regulators in Germany and France announcing the first formal audits of high-risk AI systems used in hiring and credit decisions. Companies found in violation face fines of up to €30 million or 6% of global turnover. Tech industry groups have called for a compliance grace period.</p>
+          <div class="card-actions">
+            <button class="thumb thumb-up" onclick="thumbs('ai2', 1)" title="More like this">↑</button>
+            <button class="thumb thumb-down" onclick="thumbs('ai2', -1)" title="Less like this">↓</button>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- FINANCE -->
+  <section class="topic-section" id="finance">
+    <h2 class="section-heading" style="--topic-color:#d35400">Finance &amp; Markets</h2>
+    <div class="cards-grid">
+
+      <article class="card" id="card-fin1">
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="source-badge">ABC News</span>
+            <span class="time-ago">3h ago</span>
+          </div>
+          <h3 class="card-title"><a href="#" target="_blank">RBA holds cash rate at 4.10% as inflation falls toward target band</a></h3>
+          <p class="card-summary">The Reserve Bank of Australia has kept the cash rate on hold at 4.10% following its March board meeting, citing encouraging progress on inflation but noting persistent pressures in services and housing costs. Governor Michele Bullock indicated a rate cut could come in the second half of 2025 if the current trend continues. Markets had priced in a 30% chance of a cut.</p>
+          <div class="card-actions">
+            <button class="thumb thumb-up" onclick="thumbs('fin1', 1)" title="More like this">↑</button>
+            <button class="thumb thumb-down" onclick="thumbs('fin1', -1)" title="Less like this">↓</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" id="card-fin2">
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="source-badge">WSJ</span>
+            <span class="paywall-badge">Headline only</span>
+            <span class="time-ago">2h ago</span>
+          </div>
+          <h3 class="card-title"><a href="#" target="_blank">S&amp;P 500 slides 1.4% on tariff concerns; tech sector leads losses</a></h3>
+          <div class="card-actions">
+            <button class="thumb thumb-up" onclick="thumbs('fin2', 1)" title="More like this">↑</button>
+            <button class="thumb thumb-down" onclick="thumbs('fin2', -1)" title="Less like this">↓</button>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- FILM & TV -->
+  <section class="topic-section" id="film-tv">
+    <h2 class="section-heading" style="--topic-color:#16a085">Film &amp; TV</h2>
+    <div class="cards-grid">
+
+      <article class="card" id="card-film1">
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="source-badge">The Guardian</span>
+            <span class="time-ago">6h ago</span>
+          </div>
+          <h3 class="card-title"><a href="#" target="_blank">Anora wins Palme d'Or at Cannes; Sean Baker becomes first American winner in 18 years</a></h3>
+          <p class="card-summary">Sean Baker's Anora has taken the top prize at the Cannes Film Festival, marking the first American Palme d'Or win since Michael Moore's Fahrenheit 9/11. The film, a sharp class comedy about a Brooklyn sex worker who briefly marries a Russian oligarch's son, was praised for its unpredictable energy and performances. Yura Borisov won Best Actor for his role.</p>
+          <div class="card-actions">
+            <button class="thumb thumb-up" onclick="thumbs('film1', 1)" title="More like this">↑</button>
+            <button class="thumb thumb-down" onclick="thumbs('film1', -1)" title="Less like this">↓</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" id="card-film2">
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="source-badge">ABC Arts</span>
+            <span class="time-ago">8h ago</span>
+          </div>
+          <h3 class="card-title"><a href="#" target="_blank">The last of Australian free-to-air drama: what streaming killed and what's being rebuilt</a></h3>
+          <p class="card-summary">Australian television drama is experiencing a quiet revival, with Stan and ABC commissioning more original series than at any point in the past decade. However, industry advocates warn that inadequate Australian content quotas for streaming platforms still leave local storytelling at risk. A parliamentary inquiry into screen quotas is expected to report in April.</p>
+          <div class="card-actions">
+            <button class="thumb thumb-up" onclick="thumbs('film2', 1)" title="More like this">↑</button>
+            <button class="thumb thumb-down" onclick="thumbs('film2', -1)" title="Less like this">↓</button>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  Built with Claude · Sources: The Guardian, ABC News, BBC, NPR, WSJ · Last updated 7:04 AM AEDT
+</footer>
+
+<script>
+const STORAGE_KEY = 'newsdigest_interactions';
+function loadInteractions() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+  catch { return {}; }
+}
+function saveInteractions(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+function thumbs(articleId, value) {
+  const data = loadInteractions();
+  data.thumbs = data.thumbs || {};
+  if (data.thumbs[articleId] === value) { delete data.thumbs[articleId]; }
+  else { data.thumbs[articleId] = value; }
+  saveInteractions(data);
+  updateThumbUI(articleId, data.thumbs[articleId]);
+}
+function updateThumbUI(articleId, value) {
+  const card = document.getElementById('card-' + articleId);
+  if (!card) return;
+  card.querySelector('.thumb-up')?.classList.toggle('active-up', value === 1);
+  card.querySelector('.thumb-down')?.classList.toggle('active-down', value === -1);
+}
+function toggleTheme() {
+  document.documentElement.classList.toggle('dark-theme');
+  localStorage.setItem('theme', document.documentElement.classList.contains('dark-theme') ? 'dark' : 'light');
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') document.documentElement.classList.add('dark-theme');
+  const data = loadInteractions();
+  Object.entries(data.thumbs || {}).forEach(([id, val]) => updateThumbUI(id, val));
+});
+</script>
+</body>
+</html>
