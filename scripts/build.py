@@ -263,10 +263,10 @@ def score_article(article, interactions):
     source = article["source"]
     art_id = article["id"]
     # Thumbs signals
-    thumb = interactions["thumbs"].get(art_id, 0)
+    thumb = interactions.get("thumbs", {}).get(art_id, 0)
     score += thumb * 10
     # Source preference
-    score += interactions["source_scores"].get(source, 0)
+    score += interactions.get("source_scores", {}).get(source, 0)
     # Recency bonus
     age = (datetime.now(timezone.utc) - article["date"]).total_seconds() / 3600
     score -= age * 0.5
