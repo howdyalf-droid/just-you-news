@@ -55,8 +55,16 @@ def is_recent(entry, hours=None):
     return parse_date(entry) >= cutoff
 
 def matches_topic(text, topic):
+    """Match article to topic. Requires at least one keyword match.
+    For short keyword lists, be stricter to avoid false positives."""
     text_lower = text.lower()
-    return any(kw.lower() in text_lower for kw in topic["keywords"])
+    keywords = topic["keywords"]
+    matches = sum(1 for kw in keywords if kw.lower() in text_lower)
+    # Topics with very general keywords need 2+ matches to reduce noise
+    general_topics = {"australian news", "aus news"}
+    if topic["name"].lower() in general_topics:
+        return matches >= 1
+    return matches >= 1
 
 def get_image(entry):
     """Try to extract an image URL from a feed entry."""
@@ -377,7 +385,7 @@ def build_html(topic_articles, following_articles, trending, all_articles):
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>News Digest — {date_str}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family={app['font_heading'].replace(' ', '+')}:wght@400;700&family={app['font_body'].replace(' ', '+')}:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 /* ── CSS VARIABLES — edit these to change the look ── */
 :root {{
@@ -387,8 +395,8 @@ def build_html(topic_articles, following_articles, trending, all_articles):
   --text: #1a1a1a;
   --text-muted: #666;
   --border: #e5e2dc;
-  --font-heading: '{app['font_heading']}', Georgia, serif;
-  --font-body: '{app['font_body']}', Georgia, serif;
+  --font-heading: '{app['font_heading']}', sans-serif;
+  --font-body: '{app['font_body']}', sans-serif;
   --font-size: {app['font_size']};
   --radius: 8px;
   --shadow: 0 2px 12px rgba(0,0,0,0.07);
@@ -401,6 +409,11 @@ def build_html(topic_articles, following_articles, trending, all_articles):
   --text-muted: #999;
   --border: #2a2a2a;
   --shadow: 0 2px 12px rgba(0,0,0,0.3);
+}}
+
+/* ── SCROLL OFFSET — accounts for sticky header ── */
+html {{
+  scroll-padding-top: 120px;
 }}
 
 /* ── RESET & BASE ── */
@@ -459,6 +472,7 @@ body {{
   transition: opacity 0.15s, background 0.15s;
 }}
 .nav-link:hover {{ opacity: 1; background: rgba(255,255,255,0.15); }}
+.nav-link.active {{ opacity: 1; background: rgba(255,255,255,0.25); border-bottom: 2px solid rgba(255,255,255,0.8); }}
 .theme-toggle {{
   margin-left: auto;
   background: rgba(255,255,255,0.2);
@@ -679,6 +693,25 @@ function toggleTheme() {{
   localStorage.setItem('theme', document.documentElement.classList.contains('dark-theme') ? 'dark' : 'light');
 }}
 
+// ── Active nav highlighting ───────────────────────────────────────────────
+function initNavHighlighting() {{
+  const sections = document.querySelectorAll('.topic-section[id]');
+  const navLinks = document.querySelectorAll('.nav-link');
+  if (!sections.length || !navLinks.length) return;
+
+  const observer = new IntersectionObserver((entries) => {{
+    entries.forEach(entry => {{
+      if (entry.isIntersecting) {{
+        navLinks.forEach(link => link.classList.remove('active'));
+        const activeLink = document.querySelector(`.nav-link[href="#${{entry.target.id}}"]`);
+        if (activeLink) activeLink.classList.add('active');
+      }}
+    }});
+  }}, {{ rootMargin: '-20% 0px -70% 0px' }});
+
+  sections.forEach(section => observer.observe(section));
+}}
+
 // ── Init ──────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {{
   // Restore theme
@@ -689,6 +722,9 @@ document.addEventListener('DOMContentLoaded', () => {{
   // Restore thumb states
   const data = loadInteractions();
   Object.entries(data.thumbs || {{}}).forEach(([id, val]) => updateThumbUI(id, val));
+
+  // Init nav highlighting
+  initNavHighlighting();
 }});
 </script>
 </body>
