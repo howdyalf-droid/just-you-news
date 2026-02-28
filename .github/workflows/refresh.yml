@@ -1,0 +1,42 @@
+name: Refresh News Digest
+
+on:
+  schedule:
+    # 7:00am AEDT = 20:00 UTC (previous day)
+    - cron: "0 20 * * *"
+    # 1:00pm AEDT = 02:00 UTC
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install feedparser requests pyyaml
+
+      - name: Build digest
+        env:
+          GUARDIAN_API_KEY: ${{ secrets.GUARDIAN_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/build.py
+
+      - name: Commit and push updated digest
+        run: |
+          git config user.name "News Digest Bot"
+          git config user.email "action@github.com"
+          git add docs/index.html
+          git diff --staged --quiet || git commit -m "Refresh digest $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git push
