@@ -258,52 +258,81 @@ def fetch_rss(source):
 
 # ── Claude Summarisation ──────────────────────────────────────────────────────
 
-def summarise_batch(articles):
-    """Send articles to Claude for summarisation. Falls back to trail text."""
+def classify_and_summarise(articles):
+    """Use Claude to classify articles into topics AND summarise them.
+    Returns (topic_articles dict, updated articles list)."""
     if not ANTHROPIC_API_KEY:
-        return articles
+        return None, articles
 
-    to_summarise = [a for a in articles if not a["headlines_only"] and a.get("body") and len(a.get("summary", "")) < 100]
-    if not to_summarise:
-        return articles
+    topic_names = [t["name"] for t in TOPICS]
+    topic_descriptions = "\n".join(
+        f'- "{t["name"]}": {", ".join(t["keywords"][:6])}'
+        for t in TOPICS
+    )
 
-    # Batch into groups of 10 to avoid token limits
-    for i in range(0, len(to_summarise), 10):
-        batch = to_summarise[i:i+10]
+    # Process in batches of 10
+    classified = {}  # topic_name -> [articles]
+    for t in TOPICS:
+        classified[t["name"]] = []
+
+    for i in range(0, len(articles), 10):
+        batch = articles[i:i+10]
         prompt_items = "\n\n".join(
-            f"[{j+1}] TITLE: {a['title']}\nTEXT: {a['body'][:800]}"
+            f'[{j+1}] TITLE: {a["title"]}\nSOURCE: {a.get("source","?")}\nDESCRIPTION: {a.get("summary", a.get("body",""))[:400]}'
             for j, a in enumerate(batch)
         )
-        prompt = f"""Summarise each of the following news articles in exactly {DIGEST.get('summary_sentences', 3)} clear, informative sentences. 
-Return ONLY a JSON array of strings, one summary per article, in the same order.
-No preamble, no markdown, just the JSON array.
+        prompt = f"""You are classifying news articles for a personal news digest.
 
+Available topics:
+{topic_descriptions}
+
+For each article below, return:
+1. Which topic it belongs to (must be exact topic name from the list, or "None" if it doesn't fit any)
+2. A {DIGEST.get("summary_sentences", 2)}-sentence summary
+
+Return ONLY a JSON array, one object per article, in order:
+[{{"topic": "Topic Name", "summary": "Summary text."}}, ...]
+
+No preamble, no markdown fences, just the JSON array.
+
+Articles:
 {prompt_items}"""
 
         try:
             r = requests.post(
                 "https://api.anthropic.com/v1/messages",
-                headers={
+                headers={{
                     "x-api-key": ANTHROPIC_API_KEY,
                     "anthropic-version": "2023-06-01",
                     "content-type": "application/json",
-                },
-                json={
-                    "model": "claude-sonnet-4-20250514",
-                    "max_tokens": 1500,
-                    "messages": [{"role": "user", "content": prompt}],
-                },
-                timeout=30,
+                }},
+                json={{
+                    "model": "claude-haiku-4-5-20251001",
+                    "max_tokens": 2000,
+                    "messages": [{{"role": "user", "content": prompt}}],
+                }},
+                timeout=45,
             )
             data = r.json()
             text = data["content"][0]["text"].strip()
-            summaries = json.loads(text)
-            for article, summary in zip(batch, summaries):
-                article["summary"] = summary
+            # Strip markdown fences if present
+            text = text.strip("```json").strip("```").strip()
+            results = json.loads(text)
+            for article, result in zip(batch, results):
+                topic = result.get("topic", "None")
+                summary = result.get("summary", "")
+                if summary:
+                    article["summary"] = summary
+                if topic in classified:
+                    classified[topic].append(article)
+                # else article goes to no topic (filtered out)
+            print(f"  Classified batch {i//10 + 1}: {len(batch)} articles")
         except Exception as e:
-            print(f"Summarisation error: {e}")
+            print(f"  Classification error (batch {i//10 + 1}): {e}")
+            # Fall back — put articles back into pool for keyword matching
+            return None, articles
 
-    return articles
+    return classified, articles
 
 # ── Trending detection ────────────────────────────────────────────────────────
 
@@ -1416,11 +1445,6 @@ def main():
     all_articles = unique_articles
     print(f"  Total unique articles: {len(all_articles)}")
 
-    # Summarise via Claude if key available
-    if ANTHROPIC_API_KEY:
-        print("  Summarising articles...")
-        all_articles = summarise_batch(all_articles)
-
     # Load interaction scores
     interactions = load_interactions() if INTERACTIONS_PATH.exists() else {}
 
@@ -1428,40 +1452,61 @@ def main():
     create_feedback_label()
     blocklist, redirects = fetch_feedback_blocklist()
 
-    # Assign articles to topics
+    # Assign articles to topics — use Claude classification if API key available
     topic_articles = {}
-    for topic in TOPICS:
-        matches = [
-            a for a in all_articles
-            if matches_topic(a["title"] + " " + a.get("summary", ""), topic)
-            and topic["name"] not in blocklist.get(a["id"], [])
-            and "__all__" not in blocklist.get(a["id"], [])
-        ]
-        # Score and sort
-        matches.sort(
-            key=lambda a: score_article(a, interactions),
-            reverse=True
-        )
-        # Deduplicate within topic (same title from different sources)
-        seen_titles = set()
-        deduped = []
-        for a in matches:
-            title_key = a["title"][:50].lower()
-            if title_key not in seen_titles:
-                seen_titles.add(title_key)
-                deduped.append(a)
-        count = topic.get("default_count", DIGEST.get("stories_per_topic", 5))
-        topic_articles[topic["name"]] = deduped[:count]
+    if ANTHROPIC_API_KEY:
+        print("  Classifying articles with Claude...")
+        classified, all_articles = classify_and_summarise(all_articles)
+    else:
+        classified = None
 
-    # Apply redirects — force articles into their user-specified correct topic
+    if classified is not None:
+        # Claude classified — apply blocklist, score, deduplicate
+        for topic in TOPICS:
+            matches = [
+                a for a in classified.get(topic["name"], [])
+                if topic["name"] not in blocklist.get(a["id"], [])
+                and "__all__" not in blocklist.get(a["id"], [])
+            ]
+            matches.sort(key=lambda a: score_article(a, interactions), reverse=True)
+            seen_titles = set()
+            deduped = []
+            for a in matches:
+                title_key = a["title"][:50].lower()
+                if title_key not in seen_titles:
+                    seen_titles.add(title_key)
+                    deduped.append(a)
+            count = topic.get("default_count", DIGEST.get("stories_per_topic", 5))
+            topic_articles[topic["name"]] = deduped[:count]
+        print(f"  Classification complete")
+    else:
+        # Fallback: keyword matching
+        print("  Using keyword matching (no API key or classification failed)")
+        for topic in TOPICS:
+            matches = [
+                a for a in all_articles
+                if matches_topic(a["title"] + " " + a.get("summary", ""), topic)
+                and topic["name"] not in blocklist.get(a["id"], [])
+                and "__all__" not in blocklist.get(a["id"], [])
+            ]
+            matches.sort(key=lambda a: score_article(a, interactions), reverse=True)
+            seen_titles = set()
+            deduped = []
+            for a in matches:
+                title_key = a["title"][:50].lower()
+                if title_key not in seen_titles:
+                    seen_titles.add(title_key)
+                    deduped.append(a)
+            count = topic.get("default_count", DIGEST.get("stories_per_topic", 5))
+            topic_articles[topic["name"]] = deduped[:count]
+
+    # Apply redirects from user feedback
     for art_id, target_topic in redirects.items():
-        # Find the article
         article = next((a for a in all_articles if a["id"] == art_id), None)
         if not article:
             continue
         if target_topic not in topic_articles:
             continue
-        # Add to target topic if not already there
         existing_ids = {a["id"] for a in topic_articles[target_topic]}
         if art_id not in existing_ids:
             article["redirected"] = True
