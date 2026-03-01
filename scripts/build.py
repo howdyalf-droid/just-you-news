@@ -373,7 +373,8 @@ def render_article_card(article, show_image=True):
 
     thumb_up = f'<button class="thumb thumb-up" onclick="thumbs(\'{article["id"]}\', 1)" title="More like this">↑</button>'
     thumb_down = f'<button class="thumb thumb-down" onclick="thumbs(\'{article["id"]}\', -1)" title="Less like this">↓</button>'
-    feedback_btn = f'<button class="thumb feedback-btn" onclick="openFeedback(\'{article["id"]}\', \'{escape(article["title"][:60])}\', \'{escape(article.get("current_topic", ""))}\', \'{escape(article["url"])}\')" title="Wrong section?">⚑ Wrong section?</button>'
+    safe_title = article["title"][:60].replace("'", "\\'").replace('"', '&quot;')
+    feedback_btn = f'<button class="thumb feedback-btn" onclick="openFeedback(\'{article["id"]}\', \'{safe_title}\', \'{escape(article.get("current_topic", ""))}\', \'{escape(article["url"])}\')" title="Wrong section?">⚑ Wrong section?</button>'
 
     return f"""
 <article class="card" id="card-{article['id']}">
@@ -483,7 +484,7 @@ def build_html(topic_articles, following_articles, trending, all_articles):
 
 /* ── SCROLL OFFSET — accounts for sticky header ── */
 html {{
-  scroll-padding-top: 120px;
+  scroll-padding-top: 150px;
 }}
 
 /* ── RESET & BASE ── */
@@ -793,6 +794,157 @@ body {{
   color: #2e7d32;
 }}
 
+
+/* ── SETTINGS PANEL ── */
+.settings-btn {{
+  margin-left: 0.5rem;
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: var(--bg);
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-family: var(--font-body);
+}}
+.settings-panel {{
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 320px;
+  height: 100vh;
+  background: var(--card-bg);
+  box-shadow: -4px 0 24px rgba(0,0,0,0.15);
+  z-index: 200;
+  overflow-y: auto;
+  padding: 1.5rem;
+}}
+.settings-panel.open {{ display: block; }}
+.settings-panel h3 {{
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  margin-bottom: 1.25rem;
+  color: var(--text);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}}
+.settings-close {{
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 0;
+}}
+.settings-section-label {{
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin: 1rem 0 0.5rem;
+}}
+.settings-row {{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  gap: 0.5rem;
+}}
+.settings-row label {{
+  font-size: 0.85rem;
+  color: var(--text);
+  flex: 1;
+}}
+.settings-count {{
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}}
+.count-btn {{
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+}}
+.count-btn:hover {{ background: var(--border); }}
+.count-value {{
+  min-width: 24px;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+}}
+.settings-toggle {{
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--text);
+}}
+.toggle-switch {{
+  width: 36px;
+  height: 20px;
+  background: var(--border);
+  border-radius: 10px;
+  position: relative;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}}
+.toggle-switch.on {{ background: var(--accent); }}
+.toggle-knob {{
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: left 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}}
+.toggle-switch.on .toggle-knob {{ left: 18px; }}
+.settings-overlay {{
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  z-index: 199;
+}}
+.settings-overlay.open {{ display: block; }}
+
+/* ── HORIZONTAL SCROLL MODE ── */
+.cards-grid.scroll-mode {{
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  gap: 1.25rem;
+  padding-bottom: 0.75rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+  -webkit-overflow-scrolling: touch;
+}}
+.cards-grid.scroll-mode::-webkit-scrollbar {{ height: 4px; }}
+.cards-grid.scroll-mode::-webkit-scrollbar-track {{ background: transparent; }}
+.cards-grid.scroll-mode::-webkit-scrollbar-thumb {{ background: var(--border); border-radius: 2px; }}
+.cards-grid.scroll-mode .card {{
+  min-width: 300px;
+  max-width: 300px;
+  flex-shrink: 0;
+}}
+
 /* ── FOOTER ── */
 .site-footer {{
   text-align: center;
@@ -823,6 +975,7 @@ body {{
   <nav class="site-nav">
     {nav_links}
     <button class="theme-toggle" onclick="toggleTheme()">◐ Theme</button>
+    <button class="settings-btn" onclick="openSettings()">⚙ Settings</button>
   </nav>
 </header>
 
@@ -831,6 +984,30 @@ body {{
   {trending_html}
   {topic_sections_html}
 </main>
+
+<!-- ── SETTINGS OVERLAY ── -->
+<div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"></div>
+
+<!-- ── SETTINGS PANEL ── -->
+<div class="settings-panel" id="settingsPanel">
+  <h3>
+    ⚙ Settings
+    <button class="settings-close" onclick="closeSettings()">✕</button>
+  </h3>
+
+  <div class="settings-section-label">Display</div>
+  <label class="settings-toggle" onclick="toggleScrollMode()">
+    <div class="toggle-switch" id="scrollToggle"><div class="toggle-knob"></div></div>
+    Horizontal scroll sections
+  </label>
+
+  <div class="settings-section-label">Stories per section</div>
+  <div id="topicCountRows"></div>
+
+  <div style="margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--border); font-size:0.75rem; color:var(--text-muted)">
+    Changes apply immediately and are saved in your browser.
+  </div>
+</div>
 
 <!-- ── FEEDBACK MODAL ── -->
 <div class="modal-overlay" id="feedbackModal" onclick="closeFeedbackOnOverlay(event)">
@@ -924,6 +1101,102 @@ function toggleTheme() {{
   localStorage.setItem('theme', document.documentElement.classList.contains('dark-theme') ? 'dark' : 'light');
 }}
 
+
+
+// ── Settings panel ────────────────────────────────────────────────────────
+const SETTINGS_KEY = 'newsdigest_settings';
+
+// Topic data injected at build time
+const TOPIC_DATA = __TOPIC_DATA__;
+
+function loadSettings() {{
+  try {{ return JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {{}}; }}
+  catch {{ return {{}}; }}
+}}
+
+function saveSettings(s) {{
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
+}}
+
+function openSettings() {{
+  document.getElementById('settingsPanel').classList.add('open');
+  document.getElementById('settingsOverlay').classList.add('open');
+}}
+
+function closeSettings() {{
+  document.getElementById('settingsPanel').classList.remove('open');
+  document.getElementById('settingsOverlay').classList.remove('open');
+}}
+
+function toggleScrollMode() {{
+  const s = loadSettings();
+  s.scrollMode = !s.scrollMode;
+  saveSettings(s);
+  applyScrollMode(s.scrollMode);
+  const toggle = document.getElementById('scrollToggle');
+  toggle.classList.toggle('on', s.scrollMode);
+}}
+
+function applyScrollMode(enabled) {{
+  document.querySelectorAll('.cards-grid').forEach(g => {{
+    g.classList.toggle('scroll-mode', enabled);
+  }});
+}}
+
+function changeCount(topicName, delta) {{
+  const s = loadSettings();
+  s.counts = s.counts || {{}};
+  const defaultCount = TOPIC_DATA.find(t => t.name === topicName)?.default_count || 5;
+  const current = s.counts[topicName] ?? defaultCount;
+  const newVal = Math.max(1, Math.min(12, current + delta));
+  s.counts[topicName] = newVal;
+  saveSettings(s);
+  // Update display
+  const el = document.getElementById('count-' + topicName.replace(/[^a-z0-9]/gi, '-'));
+  if (el) el.textContent = newVal;
+  // Update visible cards
+  applyTopicCount(topicName, newVal);
+}}
+
+function applyTopicCount(topicName, count) {{
+  const sectionId = 'topic-' + topicName.toLowerCase().replace(/ +/g, '-').replace(/[^a-z0-9-]/g, '');
+  const section = document.getElementById(sectionId);
+  if (!section) return;
+  const cards = section.querySelectorAll('.card');
+  cards.forEach((card, i) => {{
+    card.style.display = i < count ? '' : 'none';
+  }});
+}}
+
+function buildSettingsRows() {{
+  const s = loadSettings();
+  const container = document.getElementById('topicCountRows');
+  if (!container) return;
+  container.innerHTML = TOPIC_DATA.map(t => {{
+    const current = (s.counts || {{}})[t.name] ?? t.default_count;
+    const safeId = t.name.replace(/[^a-z0-9]/gi, '-');
+    return `<div class="settings-row">
+      <label style="color:${{t.color}};font-weight:600">${{t.name}}</label>
+      <div class="settings-count">
+        <button class="count-btn" onclick="changeCount('${{t.name}}', -1)">−</button>
+        <span class="count-value" id="count-${{safeId}}">${{current}}</span>
+        <button class="count-btn" onclick="changeCount('${{t.name}}', 1)">+</button>
+      </div>
+    </div>`;
+  }}).join('');
+}}
+
+function applyAllSettings() {{
+  const s = loadSettings();
+  // Scroll mode
+  applyScrollMode(!!s.scrollMode);
+  const toggle = document.getElementById('scrollToggle');
+  if (toggle) toggle.classList.toggle('on', !!s.scrollMode);
+  // Topic counts
+  if (s.counts) {{
+    Object.entries(s.counts).forEach(([name, count]) => applyTopicCount(name, count));
+  }}
+}}
 
 // ── Feedback modal ────────────────────────────────────────────────────────
 let currentFeedback = {{}};
@@ -1057,6 +1330,9 @@ document.addEventListener('DOMContentLoaded', () => {{
 
   // Init nav highlighting
   initNavHighlighting();
+  // Init settings
+  buildSettingsRows();
+  applyAllSettings();
 }});
 </script>
 </body>
@@ -1133,7 +1409,8 @@ def main():
             if title_key not in seen_titles:
                 seen_titles.add(title_key)
                 deduped.append(a)
-        topic_articles[topic["name"]] = deduped[:DIGEST.get("stories_per_topic", 5)]
+        count = topic.get("default_count", DIGEST.get("stories_per_topic", 5))
+        topic_articles[topic["name"]] = deduped[:count]
 
     # Following stories
     following_articles = find_following(all_articles)
@@ -1144,6 +1421,13 @@ def main():
     # Build HTML
     html = build_html(topic_articles, following_articles, trending, all_articles)
 
+    # Inject topic data for settings panel
+    import json as _json
+    topic_data = _json.dumps([
+        {"name": t["name"], "color": t.get("color", "#333"), "default_count": t.get("default_count", 5)}
+        for t in TOPICS
+    ])
+    html = html.replace("__TOPIC_DATA__", topic_data)
     OUTPUT_PATH.write_text(html, encoding="utf-8")
     print(f"✅ Digest built → {OUTPUT_PATH}")
     print(f"   Following: {len(following_articles)} articles")
