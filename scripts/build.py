@@ -398,33 +398,74 @@ def classify_and_summarise(articles, feedback_examples=None):
 
 # ── Trending detection ────────────────────────────────────────────────────────
 
+def stem(word):
+    """Simple suffix stemming to merge Israel/Israeli, attack/attacks etc."""
+    w = word.lower()
+    for suffix in ("ian", "ians", "ese", "ing", "ings", "tion", "tions",
+                   "ed", "er", "ers", "ly", "ies", "ied", "'s", "s"):
+        if w.endswith(suffix) and len(w) - len(suffix) >= 4:
+            return w[:-len(suffix)]
+    return w
+
 def find_trending(all_articles):
-    """Find topics appearing across multiple sources."""
+    """Find multi-word phrases appearing across multiple sources."""
     if not DIGEST.get("show_trending", True):
         return []
 
     import re
-    # Extract significant words/phrases from titles
-    stop_words = {"the", "a", "an", "in", "on", "at", "to", "for", "of", "and",
-                  "or", "but", "is", "are", "was", "were", "be", "been", "has",
-                  "have", "had", "will", "would", "could", "should", "may", "might",
-                  "its", "it", "this", "that", "these", "those", "with", "from",
-                  "by", "as", "up", "out", "about", "over", "after", "before"}
+    stop_words = {
+        "the", "a", "an", "in", "on", "at", "to", "for", "of", "and",
+        "or", "but", "is", "are", "was", "were", "be", "been", "has",
+        "have", "had", "will", "would", "could", "should", "may", "might",
+        "its", "it", "this", "that", "these", "those", "with", "from",
+        "by", "as", "up", "out", "about", "over", "after", "before",
+        "what", "when", "where", "who", "why", "how", "which", "than",
+        "into", "says", "said", "also", "just", "more", "new", "first",
+        "last", "one", "two", "year", "years", "time", "amid", "after",
+        "while", "within", "under", "back", "still", "now", "here",
+    }
 
-    phrase_sources = {}  # phrase -> set of sources
+    # Extract capitalised words (proper nouns / names) from each title
+    # Group by stem to merge variants like Israel/Israeli/Israelis
+    stem_to_display = {}   # stem -> best display form (most common)
+    stem_sources = {}      # stem -> set of sources
+    stem_counts = {}       # stem -> count of occurrences
+
     for article in all_articles:
-        words = re.findall(r'\b[A-Z][a-zA-Z]+\b', article["title"])
-        for word in words:
-            if word.lower() not in stop_words and len(word) > 3:
-                if word not in phrase_sources:
-                    phrase_sources[word] = set()
-                phrase_sources[word].add(article["source"])
+        title = article["title"]
+        # Extract runs of capitalised words as potential named entities
+        # e.g. "Donald Trump" or "Gaza Strip" or just "Israel"
+        phrases = re.findall(r'\b[A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)*\b', title)
+        seen_stems_this_article = set()
+        for phrase in phrases:
+            words = phrase.split()
+            # Skip single short words and stop words
+            if len(words) == 1:
+                if len(phrase) <= 3 or phrase.lower() in stop_words:
+                    continue
+            # Use first word's stem as the key for grouping
+            key = stem(words[0])
+            if key in stop_words:
+                continue
+            if key not in seen_stems_this_article:
+                seen_stems_this_article.add(key)
+                if key not in stem_sources:
+                    stem_sources[key] = set()
+                    stem_counts[key] = {}
+                stem_sources[key].add(article["source"])
+                # Track which display form appears most
+                stem_counts[key][phrase] = stem_counts[key].get(phrase, 0) + 1
+
+    # Pick best display form for each stem (most frequent, prefer multi-word)
+    for key in stem_counts:
+        best = max(stem_counts[key], key=lambda p: (len(p.split()), stem_counts[key][p]))
+        stem_to_display[key] = best
 
     min_sources = DIGEST.get("trending_min_sources", 2)
     trending = [
-        {"term": term, "count": len(sources), "sources": list(sources)}
-        for term, sources in phrase_sources.items()
-        if len(sources) >= min_sources
+        {"term": stem_to_display[k], "count": len(stem_sources[k])}
+        for k in stem_sources
+        if len(stem_sources[k]) >= min_sources
     ]
     trending.sort(key=lambda x: x["count"], reverse=True)
     return trending[:10]
