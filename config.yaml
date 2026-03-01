@@ -193,17 +193,16 @@ sources:
     url: "https://www.theage.com.au/rss/feed.xml"
     country: "AU"
 
-  - name: "Herald Sun"
-    url: "https://www.heraldsun.com.au/news/victoria/rss"
-    country: "AU"
-    headlines_only: true
-
   - name: "9News Australia"
     url: "https://www.9news.com.au/rss"
     country: "AU"
 
   - name: "SBS News"
     url: "https://www.sbs.com.au/news/feed"
+    country: "AU"
+
+  - name: "The Conversation"
+    url: "https://theconversation.com/au/articles.atom"
     country: "AU"
 
 ## ADD MORE SOURCES BELOW:
