@@ -8,39 +8,85 @@
 ## The order here is the order they appear on the page.
 ## Add or remove topics freely.
 topics:
+  - name: "Breaking News"
+    keywords: ["breaking", "urgent", "just in", "developing", "alert", "emergency", "crisis", "killed", "dead", "explosion", "attack", "disaster", "earthquake", "shooting", "crash"]
+    guardian_sections: ["world"]
+    color: "#e74c3c"
+    default_count: 4
+
+  - name: "International News"
+    keywords: ["international", "world news", "global", "United Nations", "NATO", "European Union", "China", "Russia", "Ukraine", "Middle East", "Gaza", "Israel", "India", "Japan", "Korea", "Africa", "Latin America", "war", "conflict", "ceasefire", "sanctions", "diplomacy"]
+    guardian_sections: ["world", "global-development"]
+    color: "#2c3e50"
+    default_count: 6
+
   - name: "US Politics"
-    keywords: ["US politics", "Trump", "Congress", "Senate", "White House", "Biden", "Democrat", "Republican", "Washington"]
+    keywords: ["US politics", "Trump", "Congress", "Senate", "White House", "Democrat", "Republican", "Washington DC", "Supreme Court", "DOGE", "Elon Musk", "tariffs", "immigration", "federal"]
     guardian_sections: ["us-news", "politics"]
     color: "#c0392b"
+    default_count: 5
 
   - name: "Australian Politics"
-    keywords: ["Australian politics", "Labor", "Liberal", "Albanese", "Dutton", "parliament", "federal government", "Canberra"]
+    keywords: ["Australian politics", "Labor", "Liberal", "Albanese", "Dutton", "parliament", "federal government", "Canberra", "Senate", "election", "Greens", "Teal", "Anthony Albanese", "Peter Dutton"]
     guardian_sections: ["australia-news"]
     color: "#2980b9"
+    default_count: 5
 
-  - name: "Australian News"
-    keywords: ["Australia", "Melbourne", "Sydney", "Brisbane", "NSW", "Victoria", "Queensland"]
+  - name: "Melbourne & Victoria"
+    keywords: ["Melbourne", "Victoria", "Victorian", "CFMEU", "Jacinta Allan", "AFL", "Yarra", "Docklands", "Southbank", "Geelong", "Ballarat", "Bendigo", "tram", "Metro Tunnel"]
     guardian_sections: ["australia-news"]
     color: "#27ae60"
+    default_count: 4
 
-  - name: "Artificial Intelligence"
-    keywords: ["artificial intelligence", "machine learning", "ChatGPT", "OpenAI", "Anthropic", "large language model", "LLM", "deep learning", "generative AI", "neural network", "Google DeepMind", "Gemini", "Claude AI", "AI model", "AI safety"]
+  - name: "Technology"
+    keywords: ["technology", "tech", "software", "hardware", "smartphone", "Apple", "Google", "Microsoft", "Samsung", "gadget", "app", "Silicon Valley", "startup", "cybersecurity", "hack", "data breach", "social media", "Meta", "Instagram", "TikTok"]
     guardian_sections: ["technology"]
     color: "#8e44ad"
+    default_count: 5
 
-  - name: "Finance & Markets"
-    keywords: ["stock market", "share market", "ASX", "S&P 500", "Nasdaq", "interest rates", "inflation", "RBA", "Reserve Bank", "Federal Reserve", "recession", "GDP", "sharemarket", "earnings report", "IPO", "cryptocurrency", "bitcoin", "hedge fund", "Wall Street", "central bank"]
+  - name: "Artificial Intelligence"
+    keywords: ["artificial intelligence", "machine learning", "ChatGPT", "OpenAI", "Anthropic", "large language model", "LLM", "deep learning", "generative AI", "neural network", "Google DeepMind", "Gemini", "Claude AI", "AI model", "AI safety", "AGI"]
+    guardian_sections: ["technology"]
+    color: "#6c3483"
+    default_count: 5
+
+  - name: "Finance & Stocks"
+    keywords: ["stock market", "share market", "ASX", "S&P 500", "Nasdaq", "Dow Jones", "interest rates", "inflation", "RBA", "Reserve Bank", "Federal Reserve", "recession", "GDP", "sharemarket", "earnings", "IPO", "hedge fund", "Wall Street", "central bank", "bonds", "yields"]
     guardian_sections: ["business", "money"]
     color: "#d35400"
+    default_count: 5
+
+  - name: "Personal Finance"
+    keywords: ["personal finance", "mortgage", "home loan", "savings", "superannuation", "super", "retirement", "tax", "budget", "cost of living", "rent", "housing affordability", "credit card", "debt", "insurance", "property prices"]
+    guardian_sections: ["money"]
+    color: "#e67e22"
+    default_count: 4
+
+  - name: "Environment & Climate"
+    keywords: ["climate change", "global warming", "environment", "emissions", "carbon", "renewable energy", "solar", "wind power", "fossil fuels", "biodiversity", "extinction", "wildfire", "flood", "drought", "reef", "Great Barrier Reef", "net zero", "COP", "IPCC", "deforestation"]
+    guardian_sections: ["environment", "climate-crisis"]
+    color: "#1e8449"
+    default_count: 4
 
   - name: "Film & TV"
-    keywords: ["movie", "film", "television", "streaming", "Netflix", "cinema", "Oscar", "Emmy", "series", "documentary"]
+    keywords: ["movie", "film", "television", "streaming", "Netflix", "cinema", "Oscar", "Emmy", "BAFTA", "series", "documentary", "director", "actor", "actress", "box office", "Stan", "Disney+", "HBO", "review"]
     guardian_sections: ["film", "tv-and-radio", "culture"]
     color: "#16a085"
+    default_count: 4
+
+  - name: "Music"
+    keywords: ["music", "album", "song", "concert", "tour", "festival", "band", "singer", "rapper", "pop", "rock", "hip hop", "Spotify", "Grammy", "ARIA", "Glastonbury", "Coachella", "vinyl"]
+    guardian_sections: ["music"]
+    color: "#c0392b"
+    default_count: 4
+
+  - name: "Arts & Culture"
+    keywords: ["art", "culture", "exhibition", "gallery", "museum", "theatre", "dance", "opera", "literature", "book", "author", "novel", "poetry", "architecture", "design", "fashion", "photography", "sculpture", "NGV", "ACMI"]
+    guardian_sections: ["artanddesign", "books", "stage", "culture"]
+    color: "#7d6608"
+    default_count: 4
 
 ## SOURCES
-## Add new RSS sources here. They appear automatically in the next refresh.
-## To remove a source, delete its entry or comment it out with #
 sources:
   - name: "ABC News Australia"
     url: "https://www.abc.net.au/news/feed/51120/rss.xml"
@@ -58,6 +104,14 @@ sources:
     url: "https://feeds.bbci.co.uk/news/business/rss.xml"
     country: "UK"
 
+  - name: "BBC Technology"
+    url: "https://feeds.bbci.co.uk/news/technology/rss.xml"
+    country: "UK"
+
+  - name: "BBC Entertainment & Arts"
+    url: "https://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml"
+    country: "UK"
+
   - name: "NPR News"
     url: "https://feeds.npr.org/1002/rss.xml"
     country: "US"
@@ -66,7 +120,18 @@ sources:
     url: "https://www.theguardian.com/world/rss"
     country: "UK"
 
-## WSJ (headlines only - full content requires login)
+  - name: "The Guardian - Australia"
+    url: "https://www.theguardian.com/australia-news/rss"
+    country: "AU"
+
+  - name: "The Guardian - Environment"
+    url: "https://www.theguardian.com/environment/rss"
+    country: "UK"
+
+  - name: "The Guardian - Culture"
+    url: "https://www.theguardian.com/culture/rss"
+    country: "UK"
+
   - name: "WSJ - World News"
     url: "https://feeds.content.dowjones.io/public/rss/RSSWorldNews"
     country: "US"
@@ -77,39 +142,31 @@ sources:
     country: "US"
     headlines_only: true
 
-## ADD MORE SOURCES BELOW — just copy the format above:
+## ADD MORE SOURCES BELOW:
 ## - name: "Source Name"
 ##   url: "https://example.com/feed.rss"
 ##   country: "AU"
 
 ## DIGEST SETTINGS
 digest:
-  stories_per_topic: 5          # How many stories to show per topic
-  summary_sentences: 3          # Sentences in each AI summary
-  show_trending: true           # Show the trending topics section
-  trending_min_sources: 2       # Story must appear in this many sources to trend
-  max_article_age_hours: 24     # Only show articles from last N hours (afternoon refresh uses 12)
+  stories_per_topic: 5
+  summary_sentences: 3
+  show_trending: true
+  trending_min_sources: 2
+  max_article_age_hours: 24
 
-## FOLLOWING — Ongoing stories you want tracked
-## Add a story here and it appears at the top of every digest until you remove it.
-## Format: just a list of search terms
+## FOLLOWING
 following: []
 ## Example:
 ## following:
 ##   - "Erin Patterson mushroom trial"
-##   - "federal budget 2025"
-##   - "Gaza ceasefire"
 
 ## APPEARANCE
-## Hex colours and font choices. Change these to customise the look.
 appearance:
-  theme: "light"                # "light" or "dark"
-  accent: "#1a1a2e"             # Main accent colour (headers, links)
-  background: "#f8f6f1"         # Page background
-  card_background: "#ffffff"    # Article card background
-  font_body: "DM Sans"            # Body text font (Google Fonts name)
-  font_heading: "Outfit"           # Heading font
-  font_size: "19px"               # Base font size
-
-## SCHEDULE (set in GitHub Actions — see .github/workflows/refresh.yml)
-## 7:00am and 1:00pm AEDT = 20:00 and 02:00 UTC
+  theme: "light"
+  accent: "#1a1a2e"
+  background: "#f5f5f3"
+  card_background: "#ffffff"
+  font_body: "DM Sans"
+  font_heading: "Outfit"
+  font_size: "19px"
