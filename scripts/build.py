@@ -281,88 +281,83 @@ def fetch_rss(source):
 
 def classify_and_summarise(articles, feedback_examples=None):
     """Use Claude to classify articles into topics AND summarise them.
-    Returns (topic_articles dict, updated articles list)."""
+    Returns (classified dict or None, updated articles list)."""
     if not ANTHROPIC_API_KEY:
         return None, articles
 
     # Build feedback examples section for prompt
-    examples_text = ""
     if feedback_examples:
         lines = []
-        for ex in feedback_examples[:20]:  # cap at 20 to avoid token bloat
+        for ex in feedback_examples[:20]:
             if ex["correct_topic"] and ex["correct_topic"] != "None":
-                lines.append(f'  - "{ex["title"]}" is NOT {ex["wrong_topic"]}, it belongs in {ex["correct_topic"]}')
+                lines.append('  - "' + ex["title"] + '" is NOT ' + ex["wrong_topic"] + ', it belongs in ' + ex["correct_topic"])
             else:
-                lines.append(f'  - "{ex["title"]}" does NOT belong in {ex["wrong_topic"]}')
+                lines.append('  - "' + ex["title"] + '" does NOT belong in ' + ex["wrong_topic"])
         examples_text = "\n".join(lines) if lines else "(none yet)"
     else:
         examples_text = "(none yet)"
 
-    topic_names = [t["name"] for t in TOPICS]
     topic_descriptions = "\n".join(
-        f'- "{t["name"]}": {", ".join(t["keywords"][:6])}'
+        '- "' + t["name"] + '": ' + ", ".join(t["keywords"][:6])
         for t in TOPICS
     )
 
+    summary_sentences = DIGEST.get("summary_sentences", 2)
+
     # Process in batches of 10
-    classified = {}  # topic_name -> [articles]
+    classified = {}
     for t in TOPICS:
         classified[t["name"]] = []
+
+    api_headers = {
+        "x-api-key": ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+    }
 
     for i in range(0, len(articles), 10):
         batch = articles[i:i+10]
         prompt_items = "\n\n".join(
-            f'[{j+1}] TITLE: {a["title"]}\nSOURCE: {a.get("source","?")}\nDESCRIPTION: {a.get("summary", a.get("body",""))[:400]}'
+            "[" + str(j+1) + "] TITLE: " + a["title"] + "\nSOURCE: " + a.get("source","?") + "\nDESCRIPTION: " + a.get("summary", a.get("body",""))[:400]
             for j, a in enumerate(batch)
         )
-        prompt = f"""You are classifying news articles for a personal news digest read by someone in Melbourne, Australia.
 
-Available topics and what they cover:
-{topic_descriptions}
-
-USER FEEDBACK — learn from these past corrections and apply the same judgment to similar articles:
-{examples_text}
-
-STRICT RULES:
-- "Australian Politics" = only federal/state Australian political news. NOT international news that merely mentions Australia.
-- "Melbourne & Victoria" = only local Melbourne/Victorian news. NOT general Australian news.
-- "Australian News" = general Australian domestic stories not covered by the above two.
-- "Technology" = tech products, companies, software, hardware, cybersecurity. NOT general business or war news.
-- "Artificial Intelligence" = AI, machine learning, LLMs specifically. NOT general tech.
-- "Finance & Stocks" = markets, stocks, economy, business earnings. NOT war, conflict, or general world events even if they affect prices.
-- "Personal Finance" = mortgages, savings, superannuation, cost of living for individuals. NOT corporate finance or general economics.
-- "Environment & Climate" = environmental science, climate policy, conservation. NOT war or conflict even if it causes environmental damage.
-- "Arts & Culture" = art, theatre, books, cultural events. NOT news events with cultural angles.
-- "Music" = music industry, artists, concerts, albums. NOT news with music mentioned tangentially.
-- "Film & TV" = films, television, streaming. NOT news events with film/TV mentioned tangentially.
-- "Breaking News" = urgent breaking stories with immediate significance. Use sparingly.
-- "International News" = world events, geopolitics, foreign affairs that don't fit other categories.
-- Assign "None" if an article doesn't clearly fit any topic. It is better to assign None than to force a poor fit.
-- Each article gets exactly ONE topic — pick the most specific match.
-
-For each article, return a {DIGEST.get("summary_sentences", 2)}-sentence summary and the single best topic.
-
-Return ONLY a JSON array, one object per article, in order:
-[{{"topic": "Topic Name", "summary": "Summary text."}}, ...]
-
-No preamble, no markdown fences, just the JSON array.
-
-Articles:
-{prompt_items}"""
+        prompt = (
+            "You are classifying news articles for a personal news digest read by someone in Melbourne, Australia.\n\n"
+            "Available topics and what they cover:\n" + topic_descriptions + "\n\n"
+            "USER FEEDBACK — learn from these past corrections and apply the same judgment to similar articles:\n" + examples_text + "\n\n"
+            "STRICT RULES:\n"
+            '- "Australian Politics" = only federal/state Australian political news. NOT international news that merely mentions Australia.\n'
+            '- "Melbourne & Victoria" = only local Melbourne/Victorian news. NOT general Australian news.\n'
+            '- "Australian News" = general Australian domestic stories not covered by the above two.\n'
+            '- "Technology" = tech products, companies, software, hardware, cybersecurity. NOT general business or war news.\n'
+            '- "Artificial Intelligence" = AI, machine learning, LLMs specifically. NOT general tech.\n'
+            '- "Finance & Stocks" = markets, stocks, economy, business earnings. NOT war, conflict, or general world events even if they affect prices.\n'
+            '- "Personal Finance" = mortgages, savings, superannuation, cost of living for individuals. NOT corporate finance or general economics.\n'
+            '- "Environment & Climate" = environmental science, climate policy, conservation. NOT war or conflict even if it causes environmental damage.\n'
+            '- "Arts & Culture" = art, theatre, books, cultural events. NOT news events with cultural angles.\n'
+            '- "Music" = music industry, artists, concerts, albums. NOT news with music mentioned tangentially.\n'
+            '- "Film & TV" = films, television, streaming. NOT news events with film/TV mentioned tangentially.\n'
+            '- "Breaking News" = urgent breaking stories with immediate significance. Use sparingly.\n'
+            '- "International News" = world events, geopolitics, foreign affairs that do not fit other categories.\n'
+            "- Assign \"None\" if an article doesn\'t clearly fit any topic. It is better to assign None than to force a poor fit.\n"
+            "- Each article gets exactly ONE topic — pick the most specific match.\n\n"
+            "For each article, return a " + str(summary_sentences) + "-sentence summary and the single best topic.\n\n"
+            "Return ONLY a JSON array, one object per article, in order:\n"
+            '[{"topic": "Topic Name", "summary": "Summary text."}, ...]\n\n'
+            "No preamble, no markdown fences, just the JSON array.\n\n"
+            "Articles:\n" + prompt_items
+        )
 
         try:
             r = requests.post(
                 "https://api.anthropic.com/v1/messages",
-                headers={{
-                    "x-api-key": ANTHROPIC_API_KEY,
-                    "anthropic-version": "2023-06-01",
-                    "content-type": "application/json",
-                }},
-                json={{
+                headers=api_headers,
+                json={
                     "model": "claude-haiku-4-5-20251001",
                     "max_tokens": 2000,
-                    "messages": [{{"role": "user", "content": prompt}}],
-                }},
+                    "messages": [{"role": "user", "content": prompt}],
+                },
                 timeout=45,
             )
             data = r.json()
@@ -376,7 +371,6 @@ Articles:
             if text.endswith("```"):
                 text = text[:-3].strip()
             results = json.loads(text)
-            # Ensure results is a list
             if isinstance(results, dict):
                 results = [results]
             for article, result in zip(batch, results):
@@ -388,20 +382,19 @@ Articles:
                     article["summary"] = summary
                 if topic in classified:
                     classified[topic].append(article)
-            print(f"  Classified batch {i//10 + 1}: {len(batch)} articles")
+            print("  Classified batch " + str(i//10 + 1) + ": " + str(len(batch)) + " articles")
         except Exception as e:
-            print(f"  Classification error (batch {i//10 + 1}): {e}")
+            print("  Classification error (batch " + str(i//10 + 1) + "): " + str(e))
             import traceback
-            print(f"  Traceback: {traceback.format_exc()}")
-            # Don't fail entire classification on one bad batch - continue
+            print("  Traceback: " + traceback.format_exc())
             continue
 
-    # If classification produced nothing at all, fall back to keywords
     total_classified = sum(len(v) for v in classified.values())
     if total_classified == 0:
         print("  Classification produced no results - falling back to keywords")
         return None, articles
     return classified, articles
+
 
 # ── Trending detection ────────────────────────────────────────────────────────
 
