@@ -88,10 +88,15 @@ def get_image(entry):
 # ── GitHub Issues Feedback ────────────────────────────────────────────────────
 
 def fetch_feedback_blocklist():
-    """Read open GitHub Issues tagged 'digest-feedback' and build a blocklist."""
-    blocklist = {}  # article_id -> list of topics to block from
+    """Read open GitHub Issues tagged 'digest-feedback'.
+    Returns (blocklist, redirects):
+      blocklist: article_id -> [topics to block from]
+      redirects: article_id -> suggested correct topic
+    """
+    blocklist = {}
+    redirects = {}
     if not GITHUB_TOKEN:
-        return blocklist
+        return blocklist, redirects
     try:
         headers = {
             "Authorization": f"Bearer {GITHUB_TOKEN}",
@@ -102,17 +107,19 @@ def fetch_feedback_blocklist():
         r = requests.get(url, headers=headers, params=params, timeout=10)
         issues = r.json()
         if not isinstance(issues, list):
-            return blocklist
+            return blocklist, redirects
         for issue in issues:
             body = issue.get("body", "")
-            # Parse article_id and blocked topic from issue body
             art_id = None
             blocked_topic = None
+            suggest_topic = None
             for line in body.split("\n"):
                 if line.startswith("article_id:"):
                     art_id = line.split(":", 1)[1].strip()
                 if line.startswith("block_from_topic:"):
                     blocked_topic = line.split(":", 1)[1].strip()
+                if line.startswith("suggest_topic:"):
+                    suggest_topic = line.split(":", 1)[1].strip()
             if art_id:
                 if art_id not in blocklist:
                     blocklist[art_id] = []
@@ -120,10 +127,12 @@ def fetch_feedback_blocklist():
                     blocklist[art_id].append(blocked_topic)
                 else:
                     blocklist[art_id].append("__all__")
-        print(f"  Feedback blocklist: {len(blocklist)} articles blocked")
+                if suggest_topic and suggest_topic not in ("none", ""):
+                    redirects[art_id] = suggest_topic
+        print(f"  Feedback: {len(blocklist)} blocked, {len(redirects)} redirected")
     except Exception as e:
         print(f"  Feedback fetch error: {e}")
-    return blocklist
+    return blocklist, redirects
 
 def create_feedback_label():
     """Ensure the digest-feedback label exists in the repo."""
@@ -1039,6 +1048,9 @@ body {{
       <option value="none">None of my topics</option>
     </select>
     <textarea class="modal-other" id="feedbackOther" placeholder="Tell me more..."></textarea>
+    <div id="feedbackSuccess" style="display:none" class="feedback-success">
+      ✓ Feedback sent — thanks! Next refresh will learn from this.
+    </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeFeedback()">Cancel</button>
       <button class="btn-submit" onclick="submitFeedback()">Send feedback</button>
@@ -1293,9 +1305,21 @@ appeared_in_topic: ${{currentFeedback.currentTopic}}
     );
 
     if (resp.ok) {{
-      const modal = document.querySelector('.modal');
-      modal.innerHTML = '<div class="feedback-success">✓ Feedback sent — thanks! The next digest refresh will learn from this.</div>';
-      setTimeout(closeFeedback, 2000);
+      // Show success without destroying form
+      const successEl = document.getElementById('feedbackSuccess');
+      if (successEl) {{
+        successEl.style.display = 'block';
+        setTimeout(() => {{
+          successEl.style.display = 'none';
+          closeFeedback();
+          // Reset form
+          document.querySelectorAll('input[name="feedbackType"]').forEach(r => r.checked = false);
+          document.getElementById('topicRedirect').style.display = 'none';
+          document.getElementById('topicRedirect').value = '';
+          document.getElementById('feedbackOther').style.display = 'none';
+          document.getElementById('feedbackOther').value = '';
+        }}, 2000);
+      }}
     }} else {{
       alert('Could not send feedback. Please try again later.');
     }}
@@ -1402,7 +1426,7 @@ def main():
 
     # Load feedback blocklist from GitHub Issues
     create_feedback_label()
-    blocklist = fetch_feedback_blocklist()
+    blocklist, redirects = fetch_feedback_blocklist()
 
     # Assign articles to topics
     topic_articles = {}
@@ -1428,6 +1452,21 @@ def main():
                 deduped.append(a)
         count = topic.get("default_count", DIGEST.get("stories_per_topic", 5))
         topic_articles[topic["name"]] = deduped[:count]
+
+    # Apply redirects — force articles into their user-specified correct topic
+    for art_id, target_topic in redirects.items():
+        # Find the article
+        article = next((a for a in all_articles if a["id"] == art_id), None)
+        if not article:
+            continue
+        if target_topic not in topic_articles:
+            continue
+        # Add to target topic if not already there
+        existing_ids = {a["id"] for a in topic_articles[target_topic]}
+        if art_id not in existing_ids:
+            article["redirected"] = True
+            topic_articles[target_topic].insert(0, article)
+            print(f"  Redirected article {art_id} to {target_topic}")
 
     # Following stories
     following_articles = find_following(all_articles)
