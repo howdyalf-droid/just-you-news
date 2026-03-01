@@ -150,6 +150,44 @@ sources:
     country: "US"
     headlines_only: true
 
+  ## Tech & AI
+  - name: "Ars Technica"
+    url: "https://feeds.arstechnica.com/arstechnica/index"
+    country: "US"
+
+  - name: "The Verge"
+    url: "https://www.theverge.com/rss/index.xml"
+    country: "US"
+
+  - name: "Wired"
+    url: "https://www.wired.com/feed/rss"
+    country: "US"
+
+  - name: "TechCrunch"
+    url: "https://techcrunch.com/feed/"
+    country: "US"
+
+  ## Finance (free sources)
+  - name: "ABC Australia - Business"
+    url: "https://www.abc.net.au/news/feed/2942/rss.xml"
+    country: "AU"
+
+  - name: "BBC Business"
+    url: "https://feeds.bbci.co.uk/news/business/rss.xml"
+    country: "UK"
+
+  - name: "MarketWatch"
+    url: "https://feeds.content.dowjones.io/public/rss/mw_realtimeheadlines"
+    country: "US"
+
+  - name: "Investopedia News"
+    url: "https://www.investopedia.com/feedbuilder/feed/getfeed?feedName=rss_headline"
+    country: "US"
+
+  - name: "Yahoo Finance"
+    url: "https://finance.yahoo.com/news/rssindex"
+    country: "US"
+
 ## ADD MORE SOURCES BELOW:
 ## - name: "Source Name"
 ##   url: "https://example.com/feed.rss"
