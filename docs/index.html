@@ -31,9 +31,9 @@
   --shadow: 0 2px 12px rgba(0,0,0,0.3);
 }
 
-/* ── SCROLL OFFSET — accounts for sticky header ── */
+/* ── SCROLL OFFSET — set dynamically by JS ── */
 html {
-  scroll-padding-top: 150px;
+  scroll-padding-top: 160px;
 }
 
 /* ── RESET & BASE ── */
@@ -519,7 +519,7 @@ body {
 <header class="site-header">
   <div class="header-top">
     <div class="site-title">Your News Digest</div>
-    <div class="header-date">Sunday, 1 March 2026 · 1:20 PM AEDT</div>
+    <div class="header-date">Sunday, 1 March 2026 · 1:32 PM AEDT</div>
   </div>
   <nav class="site-nav">
     <a href="#topic-breaking-news" class="nav-link">Breaking News</a><a href="#topic-international-news" class="nav-link">International News</a><a href="#topic-us-politics" class="nav-link">US Politics</a><a href="#topic-australian-politics" class="nav-link">Australian Politics</a><a href="#topic-melbourne--victoria" class="nav-link">Melbourne &amp; Victoria</a><a href="#topic-technology" class="nav-link">Technology</a><a href="#topic-artificial-intelligence" class="nav-link">Artificial Intelligence</a><a href="#topic-finance--stocks" class="nav-link">Finance &amp; Stocks</a><a href="#topic-personal-finance" class="nav-link">Personal Finance</a><a href="#topic-environment--climate" class="nav-link">Environment &amp; Climate</a><a href="#topic-film--tv" class="nav-link">Film &amp; TV</a><a href="#topic-music" class="nav-link">Music</a><a href="#topic-arts--culture" class="nav-link">Arts &amp; Culture</a>
@@ -533,30 +533,44 @@ body {
   
 <section class="trending-section">
   <h2 class="section-heading trending-heading">🔥 Trending across sources</h2>
-  <div class="trending-tags"><a class="trend-item" href="https://news.google.com/search?q=Trump" target="_blank" rel="noopener"><strong>Trump</strong> <em>6 sources</em></a><a class="trend-item" href="https://news.google.com/search?q=Iran" target="_blank" rel="noopener"><strong>Iran</strong> <em>6 sources</em></a><a class="trend-item" href="https://news.google.com/search?q=Khamenei" target="_blank" rel="noopener"><strong>Khamenei</strong> <em>5 sources</em></a><a class="trend-item" href="https://news.google.com/search?q=Israel" target="_blank" rel="noopener"><strong>Israel</strong> <em>5 sources</em></a><a class="trend-item" href="https://news.google.com/search?q=Ayatollah" target="_blank" rel="noopener"><strong>Ayatollah</strong> <em>4 sources</em></a><a class="trend-item" href="https://news.google.com/search?q=What" target="_blank" rel="noopener"><strong>What</strong> <em>4 sources</em></a><a class="trend-item" href="https://news.google.com/search?q=Iranian" target="_blank" rel="noopener"><strong>Iranian</strong> <em>3 sources</em></a><a class="trend-item" href="https://news.google.com/search?q=Israeli" target="_blank" rel="noopener"><strong>Israeli</strong> <em>3 sources</em></a></div>
+  <div class="trending-tags"><a class="trend-item" href="https://news.google.com/search?q=Iran" target="_blank" rel="noopener"><strong>Iran</strong> <em>6 sources</em></a><a class="trend-item" href="https://news.google.com/search?q=Trump" target="_blank" rel="noopener"><strong>Trump</strong> <em>6 sources</em></a><a class="trend-item" href="https://news.google.com/search?q=Israel" target="_blank" rel="noopener"><strong>Israel</strong> <em>5 sources</em></a><a class="trend-item" href="https://news.google.com/search?q=Khamenei" target="_blank" rel="noopener"><strong>Khamenei</strong> <em>5 sources</em></a><a class="trend-item" href="https://news.google.com/search?q=Ayatollah" target="_blank" rel="noopener"><strong>Ayatollah</strong> <em>4 sources</em></a><a class="trend-item" href="https://news.google.com/search?q=What" target="_blank" rel="noopener"><strong>What</strong> <em>4 sources</em></a><a class="trend-item" href="https://news.google.com/search?q=Israeli" target="_blank" rel="noopener"><strong>Israeli</strong> <em>3 sources</em></a><a class="trend-item" href="https://news.google.com/search?q=Iranian" target="_blank" rel="noopener"><strong>Iranian</strong> <em>3 sources</em></a></div>
 </section>
   
 <section class="topic-section" id="topic-breaking-news">
   <h2 class="section-heading" style="--topic-color:#e74c3c">Breaking News</h2>
   <div class="cards-grid">
-<article class="card" id="card-becbb22b">
-  <img class="card-img" src="https://media.guim.co.uk/7e2700a288966880f627c59388ef54e47a7b7d5c/665_328_2179_1742/500.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
+<article class="card" id="card-55248336">
+  <img class="card-img" src="https://live-production.wcms.abc-cdn.net.au/e62b402c633f19f8e8bd31007efb5c45?impolicy=wcms_crop_resize&amp;cropH=2813&amp;cropW=5000&amp;xPos=0&amp;yPos=260&amp;width=862&amp;height=485" alt="" loading="lazy" onerror="this.style.display='none'">
   <div class="card-body">
-    <div class="card-meta"><span class="source-badge">The Guardian</span> <span class="time-ago">2m ago</span></div>
+    <div class="card-meta"><span class="source-badge">ABC News Australia</span> <span class="time-ago">3m ago</span></div>
     <h3 class="card-title">
-      <a href="https://www.theguardian.com/us-news/2026/feb/28/khamenei-likely-killed-us-israel-iran-strikes" target="_blank" rel="noopener"
-         onclick="trackClick('becbb22b', 'The Guardian')">Iran state media confirms killing of Ayatollah Ali Khamenei following US-Israeli missile strikes</a>
+      <a href="https://www.abc.net.au/news/2026-03-01/sa-man-drowns-eurelia-southern-flinders-ranges/106402384" target="_blank" rel="noopener"
+         onclick="trackClick('55248336', 'ABC News Australia')">Breaking: Man dies after reportedly being washed away at Eurelia, SA Police say</a>
     </h3>
-    <p class="card-summary">Confirmation of supreme leader’s killing follows announcement by Donald Trump that ‘one of the most evil people in history, is dead’</p>
+    <p class="card-summary">Police say emergency services were called to the area, about 30km north of Orroroo, following reports a motorcyclist had been washed away when attempting to cross a flooded creek.</p>
     <div class="card-actions">
-      <button class="thumb thumb-up" onclick="thumbs('becbb22b', 1)" title="More like this">↑</button><button class="thumb thumb-down" onclick="thumbs('becbb22b', -1)" title="Less like this">↓</button><button class="thumb feedback-btn" onclick="openFeedback('becbb22b', 'Iran state media confirms killing of Ayatollah Ali Khamenei ', 'Breaking News', 'https://www.theguardian.com/us-news/2026/feb/28/khamenei-likely-killed-us-israel-iran-strikes')" title="Wrong section?">⚑ Wrong section?</button>
+      <button class="thumb thumb-up" onclick="thumbs('55248336', 1)" title="More like this">↑</button><button class="thumb thumb-down" onclick="thumbs('55248336', -1)" title="Less like this">↓</button><button class="thumb feedback-btn" onclick="openFeedback('55248336', 'Breaking: Man dies after reportedly being washed away at Eur', 'Breaking News', 'https://www.abc.net.au/news/2026-03-01/sa-man-drowns-eurelia-southern-flinders-ranges/106402384')" title="Wrong section?">⚑ Wrong section?</button>
+    </div>
+  </div>
+</article>
+<article class="card" id="card-e2ca2e1f">
+  <img class="card-img" src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/a4a7/live/7804ee30-14f8-11f1-9120-a910fc22c6ac.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
+  <div class="card-body">
+    <div class="card-meta"><span class="source-badge">BBC News</span> <span class="time-ago">8m ago</span></div>
+    <h3 class="card-title">
+      <a href="https://www.bbc.com/news/videos/clyv5rnd8r0o?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener"
+         onclick="trackClick('e2ca2e1f', 'BBC News')">Watch: How US-Israel strikes on Iran unfolded</a>
+    </h3>
+    <p class="card-summary">Iran launched retaliatory attacks in the Middle East after US-Israel strikes across the country.</p>
+    <div class="card-actions">
+      <button class="thumb thumb-up" onclick="thumbs('e2ca2e1f', 1)" title="More like this">↑</button><button class="thumb thumb-down" onclick="thumbs('e2ca2e1f', -1)" title="Less like this">↓</button><button class="thumb feedback-btn" onclick="openFeedback('e2ca2e1f', 'Watch: How US-Israel strikes on Iran unfolded', 'Breaking News', 'https://www.bbc.com/news/videos/clyv5rnd8r0o?at_medium=RSS&amp;at_campaign=rss')" title="Wrong section?">⚑ Wrong section?</button>
     </div>
   </div>
 </article>
 <article class="card" id="card-cea4ea13">
   <img class="card-img" src="https://media.guim.co.uk/cc0651031728aa7cd8bb4772fb6f3048801aec90/587_0_5000_4000/500.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
   <div class="card-body">
-    <div class="card-meta"><span class="source-badge">The Guardian</span> <span class="time-ago">7m ago</span></div>
+    <div class="card-meta"><span class="source-badge">The Guardian</span> <span class="time-ago">11m ago</span></div>
     <h3 class="card-title">
       <a href="https://www.theguardian.com/world/live/2026/feb/28/israel-attacks-iran-as-blasts-heard-in-tehran-live-updates" target="_blank" rel="noopener"
          onclick="trackClick('cea4ea13', 'The Guardian')">US-Israel war on Iran: supreme leader Ayatollah Ali Khamenei killed, Iranian state media confirm – latest reports</a>
@@ -567,31 +581,17 @@ body {
     </div>
   </div>
 </article>
-<article class="card" id="card-d9e1072a">
-  <img class="card-img" src="https://live-production.wcms.abc-cdn.net.au/e8173489c3d31df9e639a438f3c2f0ad?impolicy=wcms_crop_resize&amp;cropH=2813&amp;cropW=5000&amp;xPos=0&amp;yPos=260&amp;width=862&amp;height=485" alt="" loading="lazy" onerror="this.style.display='none'">
+<article class="card" id="card-becbb22b">
+  <img class="card-img" src="https://media.guim.co.uk/7e2700a288966880f627c59388ef54e47a7b7d5c/665_328_2179_1742/500.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
   <div class="card-body">
-    <div class="card-meta"><span class="source-badge">ABC News Australia</span> <span class="time-ago">13m ago</span></div>
+    <div class="card-meta"><span class="source-badge">The Guardian</span> <span class="time-ago">14m ago</span></div>
     <h3 class="card-title">
-      <a href="https://www.abc.net.au/news/2026-03-01/iran-school-children-killed-strikes-us-israel-hundred-dead/106402152" target="_blank" rel="noopener"
-         onclick="trackClick('d9e1072a', 'ABC News Australia')">&#x27;More than 100 children&#x27; dead in US and Israel strike on Iranian school, Iran says</a>
+      <a href="https://www.theguardian.com/us-news/2026/feb/28/khamenei-likely-killed-us-israel-iran-strikes" target="_blank" rel="noopener"
+         onclick="trackClick('becbb22b', 'The Guardian')">Iran state media confirms killing of Ayatollah Ali Khamenei following US-Israeli missile strikes</a>
     </h3>
-    <p class="card-summary">Vision has emerged of crowds of people searching through the rubble of a girls&#x27; elementary school in the city of Minab in southern Iran. Iranian authorities say a US and Israeli air strike killed more than 100 children.</p>
+    <p class="card-summary">Confirmation of supreme leader’s killing follows announcement by Donald Trump that ‘one of the most evil people in history, is dead’</p>
     <div class="card-actions">
-      <button class="thumb thumb-up" onclick="thumbs('d9e1072a', 1)" title="More like this">↑</button><button class="thumb thumb-down" onclick="thumbs('d9e1072a', -1)" title="Less like this">↓</button><button class="thumb feedback-btn" onclick="openFeedback('d9e1072a', '\'More than 100 children\' dead in US and Israel strike on Ira', 'Breaking News', 'https://www.abc.net.au/news/2026-03-01/iran-school-children-killed-strikes-us-israel-hundred-dead/106402152')" title="Wrong section?">⚑ Wrong section?</button>
-    </div>
-  </div>
-</article>
-<article class="card" id="card-f31a0f51">
-  <img class="card-img" src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/f722/live/4069b410-14a3-11f1-b048-c9424b2cf5fd.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
-  <div class="card-body">
-    <div class="card-meta"><span class="source-badge">BBC News</span> <span class="time-ago">17m ago</span></div>
-    <h3 class="card-title">
-      <a href="https://www.bbc.com/news/articles/cn0z9012291o?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener"
-         onclick="trackClick('f31a0f51', 'BBC News')">Bowen: A dangerous moment, but US and Israel see opportunity not to be missed</a>
-    </h3>
-    <p class="card-summary">Israel and the US believe Iran&#x27;s regime is vulnerable, dealing with an economic crisis and the aftermath of protests.</p>
-    <div class="card-actions">
-      <button class="thumb thumb-up" onclick="thumbs('f31a0f51', 1)" title="More like this">↑</button><button class="thumb thumb-down" onclick="thumbs('f31a0f51', -1)" title="Less like this">↓</button><button class="thumb feedback-btn" onclick="openFeedback('f31a0f51', 'Bowen: A dangerous moment, but US and Israel see opportunity', 'Breaking News', 'https://www.bbc.com/news/articles/cn0z9012291o?at_medium=RSS&amp;at_campaign=rss')" title="Wrong section?">⚑ Wrong section?</button>
+      <button class="thumb thumb-up" onclick="thumbs('becbb22b', 1)" title="More like this">↑</button><button class="thumb thumb-down" onclick="thumbs('becbb22b', -1)" title="Less like this">↓</button><button class="thumb feedback-btn" onclick="openFeedback('becbb22b', 'Iran state media confirms killing of Ayatollah Ali Khamenei ', 'Breaking News', 'https://www.theguardian.com/us-news/2026/feb/28/khamenei-likely-killed-us-israel-iran-strikes')" title="Wrong section?">⚑ Wrong section?</button>
     </div>
   </div>
 </article></div>
@@ -599,24 +599,10 @@ body {
 <section class="topic-section" id="topic-international-news">
   <h2 class="section-heading" style="--topic-color:#2c3e50">International News</h2>
   <div class="cards-grid">
-<article class="card" id="card-becbb22b">
-  <img class="card-img" src="https://media.guim.co.uk/7e2700a288966880f627c59388ef54e47a7b7d5c/665_328_2179_1742/500.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
-  <div class="card-body">
-    <div class="card-meta"><span class="source-badge">The Guardian</span> <span class="time-ago">2m ago</span></div>
-    <h3 class="card-title">
-      <a href="https://www.theguardian.com/us-news/2026/feb/28/khamenei-likely-killed-us-israel-iran-strikes" target="_blank" rel="noopener"
-         onclick="trackClick('becbb22b', 'The Guardian')">Iran state media confirms killing of Ayatollah Ali Khamenei following US-Israeli missile strikes</a>
-    </h3>
-    <p class="card-summary">Confirmation of supreme leader’s killing follows announcement by Donald Trump that ‘one of the most evil people in history, is dead’</p>
-    <div class="card-actions">
-      <button class="thumb thumb-up" onclick="thumbs('becbb22b', 1)" title="More like this">↑</button><button class="thumb thumb-down" onclick="thumbs('becbb22b', -1)" title="Less like this">↓</button><button class="thumb feedback-btn" onclick="openFeedback('becbb22b', 'Iran state media confirms killing of Ayatollah Ali Khamenei ', 'International News', 'https://www.theguardian.com/us-news/2026/feb/28/khamenei-likely-killed-us-israel-iran-strikes')" title="Wrong section?">⚑ Wrong section?</button>
-    </div>
-  </div>
-</article>
 <article class="card" id="card-1f203cd0">
   <img class="card-img" src="https://images.wsj.net/im-99227337" alt="" loading="lazy" onerror="this.style.display='none'">
   <div class="card-body">
-    <div class="card-meta"><span class="source-badge">WSJ - World News</span> <span class="paywall-badge">Headline only</span> <span class="time-ago">3m ago</span></div>
+    <div class="card-meta"><span class="source-badge">WSJ - World News</span> <span class="paywall-badge">Headline only</span> <span class="time-ago">4m ago</span></div>
     <h3 class="card-title">
       <a href="https://www.wsj.com/world/middle-east/why-the-u-s-and-israel-struck-iran-when-they-did-a-chance-to-kill-its-leaders-b0dbbc88" target="_blank" rel="noopener"
          onclick="trackClick('1f203cd0', 'WSJ - World News')">Why the U.S. and Israel Struck When They Did: A Chance to Kill Iran’s Leaders</a>
@@ -627,10 +613,24 @@ body {
     </div>
   </div>
 </article>
+<article class="card" id="card-e2ca2e1f">
+  <img class="card-img" src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/a4a7/live/7804ee30-14f8-11f1-9120-a910fc22c6ac.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
+  <div class="card-body">
+    <div class="card-meta"><span class="source-badge">BBC News</span> <span class="time-ago">8m ago</span></div>
+    <h3 class="card-title">
+      <a href="https://www.bbc.com/news/videos/clyv5rnd8r0o?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener"
+         onclick="trackClick('e2ca2e1f', 'BBC News')">Watch: How US-Israel strikes on Iran unfolded</a>
+    </h3>
+    <p class="card-summary">Iran launched retaliatory attacks in the Middle East after US-Israel strikes across the country.</p>
+    <div class="card-actions">
+      <button class="thumb thumb-up" onclick="thumbs('e2ca2e1f', 1)" title="More like this">↑</button><button class="thumb thumb-down" onclick="thumbs('e2ca2e1f', -1)" title="Less like this">↓</button><button class="thumb feedback-btn" onclick="openFeedback('e2ca2e1f', 'Watch: How US-Israel strikes on Iran unfolded', 'International News', 'https://www.bbc.com/news/videos/clyv5rnd8r0o?at_medium=RSS&amp;at_campaign=rss')" title="Wrong section?">⚑ Wrong section?</button>
+    </div>
+  </div>
+</article>
 <article class="card" id="card-cea4ea13">
   <img class="card-img" src="https://media.guim.co.uk/cc0651031728aa7cd8bb4772fb6f3048801aec90/587_0_5000_4000/500.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
   <div class="card-body">
-    <div class="card-meta"><span class="source-badge">The Guardian</span> <span class="time-ago">7m ago</span></div>
+    <div class="card-meta"><span class="source-badge">The Guardian</span> <span class="time-ago">11m ago</span></div>
     <h3 class="card-title">
       <a href="https://www.theguardian.com/world/live/2026/feb/28/israel-attacks-iran-as-blasts-heard-in-tehran-live-updates" target="_blank" rel="noopener"
          onclick="trackClick('cea4ea13', 'The Guardian')">US-Israel war on Iran: supreme leader Ayatollah Ali Khamenei killed, Iranian state media confirm – latest reports</a>
@@ -641,10 +641,38 @@ body {
     </div>
   </div>
 </article>
+<article class="card" id="card-24d1ee3a">
+  <img class="card-img" src="https://opinion-images.wsj.net/im-42698186" alt="" loading="lazy" onerror="this.style.display='none'">
+  <div class="card-body">
+    <div class="card-meta"><span class="source-badge">WSJ - World News</span> <span class="paywall-badge">Headline only</span> <span class="time-ago">11m ago</span></div>
+    <h3 class="card-title">
+      <a href="https://www.wsj.com/opinion/trumps-doctrine-in-iran-and-beyond-728db283" target="_blank" rel="noopener"
+         onclick="trackClick('24d1ee3a', 'WSJ - World News')">Opinion | Trump’s Doctrine in Iran and Beyond</a>
+    </h3>
+    <p class="card-summary">The president strengthens deterrence by acting decisively against partners of Russia and China.</p>
+    <div class="card-actions">
+      <button class="thumb thumb-up" onclick="thumbs('24d1ee3a', 1)" title="More like this">↑</button><button class="thumb thumb-down" onclick="thumbs('24d1ee3a', -1)" title="Less like this">↓</button><button class="thumb feedback-btn" onclick="openFeedback('24d1ee3a', 'Opinion | Trump’s Doctrine in Iran and Beyond', 'International News', 'https://www.wsj.com/opinion/trumps-doctrine-in-iran-and-beyond-728db283')" title="Wrong section?">⚑ Wrong section?</button>
+    </div>
+  </div>
+</article>
+<article class="card" id="card-becbb22b">
+  <img class="card-img" src="https://media.guim.co.uk/7e2700a288966880f627c59388ef54e47a7b7d5c/665_328_2179_1742/500.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
+  <div class="card-body">
+    <div class="card-meta"><span class="source-badge">The Guardian</span> <span class="time-ago">14m ago</span></div>
+    <h3 class="card-title">
+      <a href="https://www.theguardian.com/us-news/2026/feb/28/khamenei-likely-killed-us-israel-iran-strikes" target="_blank" rel="noopener"
+         onclick="trackClick('becbb22b', 'The Guardian')">Iran state media confirms killing of Ayatollah Ali Khamenei following US-Israeli missile strikes</a>
+    </h3>
+    <p class="card-summary">Confirmation of supreme leader’s killing follows announcement by Donald Trump that ‘one of the most evil people in history, is dead’</p>
+    <div class="card-actions">
+      <button class="thumb thumb-up" onclick="thumbs('becbb22b', 1)" title="More like this">↑</button><button class="thumb thumb-down" onclick="thumbs('becbb22b', -1)" title="Less like this">↓</button><button class="thumb feedback-btn" onclick="openFeedback('becbb22b', 'Iran state media confirms killing of Ayatollah Ali Khamenei ', 'International News', 'https://www.theguardian.com/us-news/2026/feb/28/khamenei-likely-killed-us-israel-iran-strikes')" title="Wrong section?">⚑ Wrong section?</button>
+    </div>
+  </div>
+</article>
 <article class="card" id="card-d9e1072a">
   <img class="card-img" src="https://live-production.wcms.abc-cdn.net.au/e8173489c3d31df9e639a438f3c2f0ad?impolicy=wcms_crop_resize&amp;cropH=2813&amp;cropW=5000&amp;xPos=0&amp;yPos=260&amp;width=862&amp;height=485" alt="" loading="lazy" onerror="this.style.display='none'">
   <div class="card-body">
-    <div class="card-meta"><span class="source-badge">ABC News Australia</span> <span class="time-ago">13m ago</span></div>
+    <div class="card-meta"><span class="source-badge">ABC News Australia</span> <span class="time-ago">25m ago</span></div>
     <h3 class="card-title">
       <a href="https://www.abc.net.au/news/2026-03-01/iran-school-children-killed-strikes-us-israel-hundred-dead/106402152" target="_blank" rel="noopener"
          onclick="trackClick('d9e1072a', 'ABC News Australia')">&#x27;More than 100 children&#x27; dead in US and Israel strike on Iranian school, Iran says</a>
@@ -654,43 +682,29 @@ body {
       <button class="thumb thumb-up" onclick="thumbs('d9e1072a', 1)" title="More like this">↑</button><button class="thumb thumb-down" onclick="thumbs('d9e1072a', -1)" title="Less like this">↓</button><button class="thumb feedback-btn" onclick="openFeedback('d9e1072a', '\'More than 100 children\' dead in US and Israel strike on Ira', 'International News', 'https://www.abc.net.au/news/2026-03-01/iran-school-children-killed-strikes-us-israel-hundred-dead/106402152')" title="Wrong section?">⚑ Wrong section?</button>
     </div>
   </div>
-</article>
-<article class="card" id="card-f31a0f51">
-  <img class="card-img" src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/f722/live/4069b410-14a3-11f1-b048-c9424b2cf5fd.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
-  <div class="card-body">
-    <div class="card-meta"><span class="source-badge">BBC News</span> <span class="time-ago">17m ago</span></div>
-    <h3 class="card-title">
-      <a href="https://www.bbc.com/news/articles/cn0z9012291o?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener"
-         onclick="trackClick('f31a0f51', 'BBC News')">Bowen: A dangerous moment, but US and Israel see opportunity not to be missed</a>
-    </h3>
-    <p class="card-summary">Israel and the US believe Iran&#x27;s regime is vulnerable, dealing with an economic crisis and the aftermath of protests.</p>
-    <div class="card-actions">
-      <button class="thumb thumb-up" onclick="thumbs('f31a0f51', 1)" title="More like this">↑</button><button class="thumb thumb-down" onclick="thumbs('f31a0f51', -1)" title="Less like this">↓</button><button class="thumb feedback-btn" onclick="openFeedback('f31a0f51', 'Bowen: A dangerous moment, but US and Israel see opportunity', 'International News', 'https://www.bbc.com/news/articles/cn0z9012291o?at_medium=RSS&amp;at_campaign=rss')" title="Wrong section?">⚑ Wrong section?</button>
-    </div>
-  </div>
-</article>
-<article class="card" id="card-3fb558f0">
-  <img class="card-img" src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/65fc/live/6d5bfb50-14ca-11f1-b048-c9424b2cf5fd.png" alt="" loading="lazy" onerror="this.style.display='none'">
-  <div class="card-body">
-    <div class="card-meta"><span class="source-badge">BBC News</span> <span class="time-ago">20m ago</span></div>
-    <h3 class="card-title">
-      <a href="https://www.bbc.com/news/articles/cx2dyz6p3weo?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener"
-         onclick="trackClick('3fb558f0', 'BBC News')">What we know so far: Supreme Leader Khamenei killed, as Iran launches retaliatory strikes</a>
-    </h3>
-    <p class="card-summary">Iran responds by launching missiles and drones towards Israel and four Gulf Arab countries that host US military bases.</p>
-    <div class="card-actions">
-      <button class="thumb thumb-up" onclick="thumbs('3fb558f0', 1)" title="More like this">↑</button><button class="thumb thumb-down" onclick="thumbs('3fb558f0', -1)" title="Less like this">↓</button><button class="thumb feedback-btn" onclick="openFeedback('3fb558f0', 'What we know so far: Supreme Leader Khamenei killed, as Iran', 'International News', 'https://www.bbc.com/news/articles/cx2dyz6p3weo?at_medium=RSS&amp;at_campaign=rss')" title="Wrong section?">⚑ Wrong section?</button>
-    </div>
-  </div>
 </article></div>
 </section>
 <section class="topic-section" id="topic-us-politics">
   <h2 class="section-heading" style="--topic-color:#c0392b">US Politics</h2>
   <div class="cards-grid">
+<article class="card" id="card-24d1ee3a">
+  <img class="card-img" src="https://opinion-images.wsj.net/im-42698186" alt="" loading="lazy" onerror="this.style.display='none'">
+  <div class="card-body">
+    <div class="card-meta"><span class="source-badge">WSJ - World News</span> <span class="paywall-badge">Headline only</span> <span class="time-ago">11m ago</span></div>
+    <h3 class="card-title">
+      <a href="https://www.wsj.com/opinion/trumps-doctrine-in-iran-and-beyond-728db283" target="_blank" rel="noopener"
+         onclick="trackClick('24d1ee3a', 'WSJ - World News')">Opinion | Trump’s Doctrine in Iran and Beyond</a>
+    </h3>
+    <p class="card-summary">The president strengthens deterrence by acting decisively against partners of Russia and China.</p>
+    <div class="card-actions">
+      <button class="thumb thumb-up" onclick="thumbs('24d1ee3a', 1)" title="More like this">↑</button><button class="thumb thumb-down" onclick="thumbs('24d1ee3a', -1)" title="Less like this">↓</button><button class="thumb feedback-btn" onclick="openFeedback('24d1ee3a', 'Opinion | Trump’s Doctrine in Iran and Beyond', 'US Politics', 'https://www.wsj.com/opinion/trumps-doctrine-in-iran-and-beyond-728db283')" title="Wrong section?">⚑ Wrong section?</button>
+    </div>
+  </div>
+</article>
 <article class="card" id="card-becbb22b">
   <img class="card-img" src="https://media.guim.co.uk/7e2700a288966880f627c59388ef54e47a7b7d5c/665_328_2179_1742/500.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
   <div class="card-body">
-    <div class="card-meta"><span class="source-badge">The Guardian</span> <span class="time-ago">2m ago</span></div>
+    <div class="card-meta"><span class="source-badge">The Guardian</span> <span class="time-ago">14m ago</span></div>
     <h3 class="card-title">
       <a href="https://www.theguardian.com/us-news/2026/feb/28/khamenei-likely-killed-us-israel-iran-strikes" target="_blank" rel="noopener"
          onclick="trackClick('becbb22b', 'The Guardian')">Iran state media confirms killing of Ayatollah Ali Khamenei following US-Israeli missile strikes</a>
@@ -704,7 +718,7 @@ body {
 <article class="card" id="card-54c6c851">
   <img class="card-img" src="https://live-production.wcms.abc-cdn.net.au/1da826407ed075cbf874ea892613fc42?impolicy=wcms_crop_resize&amp;cropH=2141&amp;cropW=3807&amp;xPos=0&amp;yPos=165&amp;width=862&amp;height=485" alt="" loading="lazy" onerror="this.style.display='none'">
   <div class="card-body">
-    <div class="card-meta"><span class="source-badge">ABC News Australia</span> <span class="time-ago">48m ago</span></div>
+    <div class="card-meta"><span class="source-badge">ABC News Australia</span> <span class="time-ago">1h ago</span></div>
     <h3 class="card-title">
       <a href="https://www.abc.net.au/news/2026-03-01/trump-iran-taste-for-attacking-other-countries/106402042" target="_blank" rel="noopener"
          onclick="trackClick('54c6c851', 'ABC News Australia')">Why Trump has suddenly developed a taste for attacking other countries</a>
@@ -742,20 +756,6 @@ body {
       <button class="thumb thumb-up" onclick="thumbs('088bfc4a', 1)" title="More like this">↑</button><button class="thumb thumb-down" onclick="thumbs('088bfc4a', -1)" title="Less like this">↓</button><button class="thumb feedback-btn" onclick="openFeedback('088bfc4a', 'Trump’s War on Iran Threatens to Drive Up Oil Prices and Inf', 'US Politics', 'https://www.wsj.com/world/middle-east/trumps-war-on-iran-threatens-to-drive-up-oil-prices-and-inflation-8fda38a8')" title="Wrong section?">⚑ Wrong section?</button>
     </div>
   </div>
-</article>
-<article class="card" id="card-4febba5c">
-  <img class="card-img" src="https://media.guim.co.uk/07eea4979d850f9011b0f0cfcf71463c4d084876/1084_0_6827_5464/500.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
-  <div class="card-body">
-    <div class="card-meta"><span class="source-badge">The Guardian</span> <span class="time-ago">2h ago</span></div>
-    <h3 class="card-title">
-      <a href="https://www.theguardian.com/us-news/2026/feb/28/khamenei-killing-protests-us" target="_blank" rel="noopener"
-         onclick="trackClick('4febba5c', 'The Guardian')">Protesters rally across US after Iran strikes and reports of Khamenei killing</a>
-    </h3>
-    <p class="card-summary">Crowds gather in DC, New York and beyond to denounce Trump’s Iran strikes as an illegal act of war</p>
-    <div class="card-actions">
-      <button class="thumb thumb-up" onclick="thumbs('4febba5c', 1)" title="More like this">↑</button><button class="thumb thumb-down" onclick="thumbs('4febba5c', -1)" title="Less like this">↓</button><button class="thumb feedback-btn" onclick="openFeedback('4febba5c', 'Protesters rally across US after Iran strikes and reports of', 'US Politics', 'https://www.theguardian.com/us-news/2026/feb/28/khamenei-killing-protests-us')" title="Wrong section?">⚑ Wrong section?</button>
-    </div>
-  </div>
 </article></div>
 </section>
 <section class="topic-section" id="topic-australian-politics">
@@ -764,7 +764,7 @@ body {
 <article class="card" id="card-888b0095">
   <img class="card-img" src="https://media.guim.co.uk/f18bba01cac978d84643ff019a42efa551770655/422_0_5040_4032/500.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
   <div class="card-body">
-    <div class="card-meta"><span class="source-badge">The Guardian</span> <span class="time-ago">1m ago</span></div>
+    <div class="card-meta"><span class="source-badge">The Guardian</span> <span class="time-ago">4m ago</span></div>
     <h3 class="card-title">
       <a href="https://www.theguardian.com/australia-news/live/2026/mar/01/australia-news-live-sunday-iran-illegal-war-reaction-labor-coalition" target="_blank" rel="noopener"
          onclick="trackClick('888b0095', 'The Guardian')">News live: Anthony Albanese says Australia ‘concerned about regional escalation’ but Ayatollah Ali Khamenei’s death ‘will not be mourned’</a>
@@ -838,7 +838,7 @@ body {
 <article class="card" id="card-fa1b5954">
   <img class="card-img" src="https://live-production.wcms.abc-cdn.net.au/1404396f0e91c5c17daaa35292017d6d?impolicy=wcms_crop_resize&amp;cropH=909&amp;cropW=1616&amp;xPos=0&amp;yPos=86&amp;width=862&amp;height=485" alt="" loading="lazy" onerror="this.style.display='none'">
   <div class="card-body">
-    <div class="card-meta"><span class="source-badge">ABC News Australia</span> <span class="time-ago">1h ago</span></div>
+    <div class="card-meta"><span class="source-badge">ABC News Australia</span> <span class="time-ago">2h ago</span></div>
     <h3 class="card-title">
       <a href="https://www.abc.net.au/news/2026-03-01/art-show-illawarra-social-housing-residents-bundaleer-barnardos/106381822" target="_blank" rel="noopener"
          onclick="trackClick('fa1b5954', 'ABC News Australia')">Ben Quilty, Ken Done art donations keep vital community hub &#x27;afloat&#x27;</a>
@@ -1000,7 +1000,7 @@ body {
 <article class="card" id="card-a4adb0aa">
   <img class="card-img" src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/8485/live/6849f2a0-1472-11f1-b048-c9424b2cf5fd.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
   <div class="card-body">
-    <div class="card-meta"><span class="source-badge">BBC News</span> <span class="time-ago">11h ago</span></div>
+    <div class="card-meta"><span class="source-badge">BBC News</span> <span class="time-ago">12h ago</span></div>
     <h3 class="card-title">
       <a href="https://www.bbc.com/news/articles/cr5le06lq03o?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener"
          onclick="trackClick('a4adb0aa', 'BBC News')">Man appears in court over Churchill statue damage</a>
@@ -1121,6 +1121,20 @@ body {
 <section class="topic-section" id="topic-environment--climate">
   <h2 class="section-heading" style="--topic-color:#1e8449">Environment &amp; Climate</h2>
   <div class="cards-grid">
+<article class="card" id="card-55248336">
+  <img class="card-img" src="https://live-production.wcms.abc-cdn.net.au/e62b402c633f19f8e8bd31007efb5c45?impolicy=wcms_crop_resize&amp;cropH=2813&amp;cropW=5000&amp;xPos=0&amp;yPos=260&amp;width=862&amp;height=485" alt="" loading="lazy" onerror="this.style.display='none'">
+  <div class="card-body">
+    <div class="card-meta"><span class="source-badge">ABC News Australia</span> <span class="time-ago">3m ago</span></div>
+    <h3 class="card-title">
+      <a href="https://www.abc.net.au/news/2026-03-01/sa-man-drowns-eurelia-southern-flinders-ranges/106402384" target="_blank" rel="noopener"
+         onclick="trackClick('55248336', 'ABC News Australia')">Breaking: Man dies after reportedly being washed away at Eurelia, SA Police say</a>
+    </h3>
+    <p class="card-summary">Police say emergency services were called to the area, about 30km north of Orroroo, following reports a motorcyclist had been washed away when attempting to cross a flooded creek.</p>
+    <div class="card-actions">
+      <button class="thumb thumb-up" onclick="thumbs('55248336', 1)" title="More like this">↑</button><button class="thumb thumb-down" onclick="thumbs('55248336', -1)" title="Less like this">↓</button><button class="thumb feedback-btn" onclick="openFeedback('55248336', 'Breaking: Man dies after reportedly being washed away at Eur', 'Environment &amp; Climate', 'https://www.abc.net.au/news/2026-03-01/sa-man-drowns-eurelia-southern-flinders-ranges/106402384')" title="Wrong section?">⚑ Wrong section?</button>
+    </div>
+  </div>
+</article>
 <article class="card" id="card-08c04479">
   
   <div class="card-body">
@@ -1162,20 +1176,6 @@ body {
       <button class="thumb thumb-up" onclick="thumbs('a5c17c8b', 1)" title="More like this">↑</button><button class="thumb thumb-down" onclick="thumbs('a5c17c8b', -1)" title="Less like this">↓</button><button class="thumb feedback-btn" onclick="openFeedback('a5c17c8b', 'Marriott International Wins Court Battle Over Maasai Mara Sa', 'Environment &amp; Climate', 'https://www.wsj.com/world/africa/marriott-international-wins-court-battle-over-maasai-mara-safari-camp-in-kenya-3d1982fc')" title="Wrong section?">⚑ Wrong section?</button>
     </div>
   </div>
-</article>
-<article class="card" id="card-3a4c6582">
-  
-  <div class="card-body">
-    <div class="card-meta"><span class="source-badge">The Guardian - Environment</span> <span class="time-ago">19h ago</span></div>
-    <h3 class="card-title">
-      <a href="https://www.theguardian.com/environment/2026/feb/28/conservation-biodiversity-species-genetics-wall-lizards-aeolian-italy-aoe" target="_blank" rel="noopener"
-         onclick="trackClick('3a4c6582', 'The Guardian - Environment')">‘Who’d guess they’re the same species?’ What Italy’s wall lizards reveal about genetic diversity and why it matters</a>
-    </h3>
-    <p class="card-summary">Understanding biodiversity within species is key to our understanding of why nature works the way it does, say researchersWords and photographs by Roberto García-RoaTwelve miles from the heart of Rome, Dr Javier Ábalos pauses his walk, lifts his sunglasses and points. To his right, perched on a rocky wall, sits a beautiful lizard. Its body is coated in charcoal-black tones speckled with striking yellow across a green dorsum, and its head, with a prominent jaw, is splashed with fluorescent blue s</p>
-    <div class="card-actions">
-      <button class="thumb thumb-up" onclick="thumbs('3a4c6582', 1)" title="More like this">↑</button><button class="thumb thumb-down" onclick="thumbs('3a4c6582', -1)" title="Less like this">↓</button><button class="thumb feedback-btn" onclick="openFeedback('3a4c6582', '‘Who’d guess they’re the same species?’ What Italy’s wall li', 'Environment &amp; Climate', 'https://www.theguardian.com/environment/2026/feb/28/conservation-biodiversity-species-genetics-wall-lizards-aeolian-italy-aoe')" title="Wrong section?">⚑ Wrong section?</button>
-    </div>
-  </div>
 </article></div>
 </section>
 <section class="topic-section" id="topic-film--tv">
@@ -1184,7 +1184,7 @@ body {
 <article class="card" id="card-a40ccc7e">
   <img class="card-img" src="https://media.guim.co.uk/5b09e84f8ee654465ab883055e6cfabce4c856c7/183_0_1835_1469/500.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
   <div class="card-body">
-    <div class="card-meta"><span class="source-badge">The Guardian</span> <span class="time-ago">51m ago</span></div>
+    <div class="card-meta"><span class="source-badge">The Guardian</span> <span class="time-ago">1h ago</span></div>
     <h3 class="card-title">
       <a href="https://www.theguardian.com/world/2026/mar/01/ayatollah-ali-khameini-obituary" target="_blank" rel="noopener"
          onclick="trackClick('a40ccc7e', 'The Guardian')">Ayatollah Ali Khameini obituary</a>
@@ -1244,7 +1244,7 @@ body {
 <article class="card" id="card-84fc0935">
   <img class="card-img" src="https://live-production.wcms.abc-cdn.net.au/7f75298162415c06ec4723d41f4a4b6f?impolicy=wcms_crop_resize&amp;cropH=1608&amp;cropW=2858&amp;xPos=0&amp;yPos=74&amp;width=862&amp;height=485" alt="" loading="lazy" onerror="this.style.display='none'">
   <div class="card-body">
-    <div class="card-meta"><span class="source-badge">ABC News Australia</span> <span class="time-ago">1h ago</span></div>
+    <div class="card-meta"><span class="source-badge">ABC News Australia</span> <span class="time-ago">2h ago</span></div>
     <h3 class="card-title">
       <a href="https://www.abc.net.au/news/2026-03-01/respite-services-and-caring-for-carers/106348298" target="_blank" rel="noopener"
          onclick="trackClick('84fc0935', 'ABC News Australia')">Respite care gives Meika time to breathe</a>
@@ -1272,7 +1272,7 @@ body {
 <article class="card" id="card-aa0b40b0">
   <img class="card-img" src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/e8bc/live/f7e93d40-14da-11f1-b106-cbf633dcab7a.jpg" alt="" loading="lazy" onerror="this.style.display='none'">
   <div class="card-body">
-    <div class="card-meta"><span class="source-badge">BBC News</span> <span class="time-ago">2h ago</span></div>
+    <div class="card-meta"><span class="source-badge">BBC News</span> <span class="time-ago">3h ago</span></div>
     <h3 class="card-title">
       <a href="https://www.bbc.com/news/articles/cre0xy1w1n3o?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener"
          onclick="trackClick('aa0b40b0', 'BBC News')">Olivia Dean crowned new UK queen of pop as Brit Awards hit the north</a>
@@ -1301,10 +1301,24 @@ body {
 <section class="topic-section" id="topic-arts--culture">
   <h2 class="section-heading" style="--topic-color:#7d6608">Arts &amp; Culture</h2>
   <div class="cards-grid">
+<article class="card" id="card-24d1ee3a">
+  <img class="card-img" src="https://opinion-images.wsj.net/im-42698186" alt="" loading="lazy" onerror="this.style.display='none'">
+  <div class="card-body">
+    <div class="card-meta"><span class="source-badge">WSJ - World News</span> <span class="paywall-badge">Headline only</span> <span class="time-ago">11m ago</span></div>
+    <h3 class="card-title">
+      <a href="https://www.wsj.com/opinion/trumps-doctrine-in-iran-and-beyond-728db283" target="_blank" rel="noopener"
+         onclick="trackClick('24d1ee3a', 'WSJ - World News')">Opinion | Trump’s Doctrine in Iran and Beyond</a>
+    </h3>
+    <p class="card-summary">The president strengthens deterrence by acting decisively against partners of Russia and China.</p>
+    <div class="card-actions">
+      <button class="thumb thumb-up" onclick="thumbs('24d1ee3a', 1)" title="More like this">↑</button><button class="thumb thumb-down" onclick="thumbs('24d1ee3a', -1)" title="Less like this">↓</button><button class="thumb feedback-btn" onclick="openFeedback('24d1ee3a', 'Opinion | Trump’s Doctrine in Iran and Beyond', 'Arts &amp; Culture', 'https://www.wsj.com/opinion/trumps-doctrine-in-iran-and-beyond-728db283')" title="Wrong section?">⚑ Wrong section?</button>
+    </div>
+  </div>
+</article>
 <article class="card" id="card-d9e1072a">
   <img class="card-img" src="https://live-production.wcms.abc-cdn.net.au/e8173489c3d31df9e639a438f3c2f0ad?impolicy=wcms_crop_resize&amp;cropH=2813&amp;cropW=5000&amp;xPos=0&amp;yPos=260&amp;width=862&amp;height=485" alt="" loading="lazy" onerror="this.style.display='none'">
   <div class="card-body">
-    <div class="card-meta"><span class="source-badge">ABC News Australia</span> <span class="time-ago">13m ago</span></div>
+    <div class="card-meta"><span class="source-badge">ABC News Australia</span> <span class="time-ago">25m ago</span></div>
     <h3 class="card-title">
       <a href="https://www.abc.net.au/news/2026-03-01/iran-school-children-killed-strikes-us-israel-hundred-dead/106402152" target="_blank" rel="noopener"
          onclick="trackClick('d9e1072a', 'ABC News Australia')">&#x27;More than 100 children&#x27; dead in US and Israel strike on Iranian school, Iran says</a>
@@ -1318,7 +1332,7 @@ body {
 <article class="card" id="card-8c32486b">
   <img class="card-img" src="https://live-production.wcms.abc-cdn.net.au/82ba4cc6c9bb756292c37eb45e28abbc?impolicy=wcms_crop_resize&amp;cropH=4608&amp;cropW=8192&amp;xPos=0&amp;yPos=846&amp;width=862&amp;height=485" alt="" loading="lazy" onerror="this.style.display='none'">
   <div class="card-body">
-    <div class="card-meta"><span class="source-badge">ABC News Australia</span> <span class="time-ago">21m ago</span></div>
+    <div class="card-meta"><span class="source-badge">ABC News Australia</span> <span class="time-ago">33m ago</span></div>
     <h3 class="card-title">
       <a href="https://www.abc.net.au/news/2026-03-01/cancer-survivor-heart-transplant-recipient-organ-donations/106395354" target="_blank" rel="noopener"
          onclick="trackClick('8c32486b', 'ABC News Australia')">Sienna survived childhood cancer. Then, her heart began to fail</a>
@@ -1332,7 +1346,7 @@ body {
 <article class="card" id="card-54c6c851">
   <img class="card-img" src="https://live-production.wcms.abc-cdn.net.au/1da826407ed075cbf874ea892613fc42?impolicy=wcms_crop_resize&amp;cropH=2141&amp;cropW=3807&amp;xPos=0&amp;yPos=165&amp;width=862&amp;height=485" alt="" loading="lazy" onerror="this.style.display='none'">
   <div class="card-body">
-    <div class="card-meta"><span class="source-badge">ABC News Australia</span> <span class="time-ago">48m ago</span></div>
+    <div class="card-meta"><span class="source-badge">ABC News Australia</span> <span class="time-ago">1h ago</span></div>
     <h3 class="card-title">
       <a href="https://www.abc.net.au/news/2026-03-01/trump-iran-taste-for-attacking-other-countries/106402042" target="_blank" rel="noopener"
          onclick="trackClick('54c6c851', 'ABC News Australia')">Why Trump has suddenly developed a taste for attacking other countries</a>
@@ -1340,20 +1354,6 @@ body {
     <p class="card-summary">Trump once proclaimed: &quot;I am especially proud to be the first president in decades who has started no new wars.&quot; Now things have changed.</p>
     <div class="card-actions">
       <button class="thumb thumb-up" onclick="thumbs('54c6c851', 1)" title="More like this">↑</button><button class="thumb thumb-down" onclick="thumbs('54c6c851', -1)" title="Less like this">↓</button><button class="thumb feedback-btn" onclick="openFeedback('54c6c851', 'Why Trump has suddenly developed a taste for attacking other', 'Arts &amp; Culture', 'https://www.abc.net.au/news/2026-03-01/trump-iran-taste-for-attacking-other-countries/106402042')" title="Wrong section?">⚑ Wrong section?</button>
-    </div>
-  </div>
-</article>
-<article class="card" id="card-5d6c9772">
-  <img class="card-img" src="https://live-production.wcms.abc-cdn.net.au/2846aaa1c53adbca08224f2f7bd1522c?impolicy=wcms_crop_resize&amp;cropH=997&amp;cropW=1772&amp;xPos=0&amp;yPos=809&amp;width=862&amp;height=485" alt="" loading="lazy" onerror="this.style.display='none'">
-  <div class="card-body">
-    <div class="card-meta"><span class="source-badge">ABC News Australia</span> <span class="time-ago">1h ago</span></div>
-    <h3 class="card-title">
-      <a href="https://www.abc.net.au/news/2026-03-01/goldfields-legacies-karlkurla-elders-oral-history-exhibition/106381410" target="_blank" rel="noopener"
-         onclick="trackClick('5d6c9772', 'ABC News Australia')">Exhibition shares First Nations stories of &#x27;strength and resilience&#x27;</a>
-    </h3>
-    <p class="card-summary">An oral history exhibition shares the lifetime stories of First Nations elders and their experiences at critical moments in Australian history.</p>
-    <div class="card-actions">
-      <button class="thumb thumb-up" onclick="thumbs('5d6c9772', 1)" title="More like this">↑</button><button class="thumb thumb-down" onclick="thumbs('5d6c9772', -1)" title="Less like this">↓</button><button class="thumb feedback-btn" onclick="openFeedback('5d6c9772', 'Exhibition shares First Nations stories of \'strength and res', 'Arts &amp; Culture', 'https://www.abc.net.au/news/2026-03-01/goldfields-legacies-karlkurla-elders-oral-history-exhibition/106381410')" title="Wrong section?">⚑ Wrong section?</button>
     </div>
   </div>
 </article></div>
@@ -1423,7 +1423,7 @@ body {
 
 <footer class="site-footer">
   Built with Claude · Sources: The Guardian, ABC News, BBC, NPR, WSJ
-  · Last updated 1:20 PM AEDT
+  · Last updated 1:32 PM AEDT
 </footer>
 
 <script>
@@ -1580,8 +1580,14 @@ function openFeedback(articleId, title, currentTopic, url) {
   currentFeedback = { articleId, title, currentTopic, url };
   document.getElementById('modalArticleTitle').textContent = title + (currentTopic ? ' (in: ' + currentTopic + ')' : '');
   document.querySelectorAll('input[name="feedbackType"]').forEach(r => r.checked = false);
-  document.getElementById('topicRedirect').style.display = 'none';
-  document.getElementById('topicRedirect').value = '';
+  // Populate topic dropdown dynamically from TOPIC_DATA
+  const select = document.getElementById('topicRedirect');
+  select.style.display = 'none';
+  select.value = '';
+  // Rebuild options from current topic list
+  select.innerHTML = '<option value="">— Select correct topic (optional) —</option>' +
+    TOPIC_DATA.map(t => `<option value="${t.name}">${t.name}</option>`).join('') +
+    '<option value="none">None of my topics</option>';
   document.getElementById('feedbackOther').style.display = 'none';
   document.getElementById('feedbackOther').value = '';
   document.getElementById('feedbackModal').classList.add('open');
@@ -1705,6 +1711,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Init nav highlighting
   initNavHighlighting();
+  // Dynamic scroll padding based on actual header height
+  function updateScrollPadding() {
+    const header = document.querySelector('.site-header');
+    if (header) {
+      const h = header.getBoundingClientRect().height;
+      document.documentElement.style.setProperty('scroll-padding-top', (h + 24) + 'px');
+    }
+  }
+  updateScrollPadding();
+  window.addEventListener('resize', updateScrollPadding);
+
   // Init settings
   buildSettingsRows();
   applyAllSettings();
