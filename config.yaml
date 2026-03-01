@@ -46,12 +46,14 @@ topics:
 
   - name: "Technology"
     keywords: ["technology", "tech", "software", "hardware", "smartphone", "Apple", "Google", "Microsoft", "Samsung", "gadget", "app", "Silicon Valley", "startup", "cybersecurity", "hack", "data breach", "social media", "Meta", "Instagram", "TikTok"]
+    exclude_keywords: ["petrol", "fuel", "wildlife", "weather", "flood", "fire", "bushfire", "sport", "cricket", "football", "AFL"]
     guardian_sections: ["technology"]
     color: "#8e44ad"
     default_count: 5
 
   - name: "Artificial Intelligence"
     keywords: ["artificial intelligence", "machine learning", "ChatGPT", "OpenAI", "Anthropic", "large language model", "LLM", "deep learning", "generative AI", "neural network", "Google DeepMind", "Gemini", "Claude AI", "AI model", "AI safety", "AGI"]
+    exclude_keywords: ["petrol", "fuel", "wildlife", "weather", "climate", "sport", "cricket", "football", "AFL", "election", "housing", "mortgage", "flood", "fire", "bushfire", "shark", "snake", "spider"]
     guardian_sections: ["technology"]
     color: "#6c3483"
     default_count: 5
