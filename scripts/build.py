@@ -338,7 +338,7 @@ def classify_and_summarise(articles, feedback_examples=None):
             '- "Arts & Culture" = art, theatre, books, cultural events. NOT news events with cultural angles.\n'
             '- "Music" = music industry, artists, concerts, albums. NOT news with music mentioned tangentially.\n'
             '- "Film & TV" = films, television, streaming. NOT news events with film/TV mentioned tangentially.\n'
-            '- "Breaking News" = urgent breaking stories with immediate significance. Use sparingly.\n'
+            '- "Breaking News" = major breaking stories: deaths, attacks, disasters, significant political events happening right now. Use for genuinely urgent news.\n'
             '- "International News" = world events, geopolitics, foreign affairs that do not fit other categories.\n'
             "- Assign \"None\" if an article doesn\'t clearly fit any topic. It is better to assign None than to force a poor fit.\n"
             "- Each article gets exactly ONE topic — pick the most specific match.\n\n"
@@ -454,20 +454,50 @@ def load_interactions():
     if INTERACTIONS_PATH.exists():
         with open(INTERACTIONS_PATH) as f:
             return json.load(f)
-    return {"clicks": {}, "thumbs": {}, "source_scores": {}, "topic_scores": {}}
+    return {
+        "clicks": {},
+        "thumbs": {},
+        "source_scores": {},
+        "topic_scores": {},
+        "keyword_scores": {},
+        "read_count": 0,
+    }
+
+def extract_keywords(title):
+    """Extract significant words from a title for interest tracking."""
+    import re
+    stop = {"the","a","an","in","on","at","to","for","of","and","or","but",
+            "is","are","was","were","be","been","has","have","had","will",
+            "with","from","by","as","up","out","over","after","its","says",
+            "new","how","why","what","who","after","about","into"}
+    words = re.findall(r"\b[a-zA-Z]{4,}\b", title.lower())
+    return [w for w in words if w not in stop]
 
 def score_article(article, interactions):
-    score = 0
+    score = 0.0
     source = article["source"]
     art_id = article["id"]
-    # Thumbs signals
+
+    # Explicit thumbs signals (strongest signal)
     thumb = interactions.get("thumbs", {}).get(art_id, 0)
-    score += thumb * 10
-    # Source preference
-    score += interactions.get("source_scores", {}).get(source, 0)
-    # Recency bonus
+    score += thumb * 15
+
+    # Click history — articles from sources you click get a boost
+    source_scores = interactions.get("source_scores", {})
+    score += source_scores.get(source, 0) * 2
+
+    # Keyword interest — words appearing in articles you've clicked get boosted
+    keyword_scores = interactions.get("keyword_scores", {})
+    if keyword_scores:
+        keywords = extract_keywords(article["title"])
+        keyword_boost = sum(keyword_scores.get(kw, 0) for kw in keywords)
+        # Normalise — cap at 10 points to avoid overwhelming recency
+        score += min(keyword_boost * 0.5, 10)
+
+    # Recency — prefer fresh articles but don't completely bury older ones
     age = (datetime.now(timezone.utc) - article["date"]).total_seconds() / 3600
-    score -= age * 0.5
+    score -= age * 0.3
+
     return score
 
 # ── HTML Generation ───────────────────────────────────────────────────────────
@@ -506,7 +536,7 @@ def render_article_card(article, show_image=True):
     <div class="card-meta">{source_badge} <span class="time-ago">{time_str}</span></div>
     <h3 class="card-title">
       <a href="{escape(article['url'])}" target="_blank" rel="noopener"
-         onclick="trackClick('{article['id']}', '{escape(article['source'])}')">{escape(article['title'])}</a>
+         onclick="trackClick('{article['id']}', '{escape(article['source'])}', {json.dumps(article['title'])})">{escape(article['title'])}</a>
     </h3>
     {f'<p class="card-summary">{summary}</p>' if summary else ''}
     <div class="card-actions">
@@ -1127,7 +1157,13 @@ body {{
   <div class="settings-section-label">Stories per section</div>
   <div id="topicCountRows"></div>
 
-  <div style="margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--border); font-size:0.75rem; color:var(--text-muted)">
+  <div style="margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--border)">
+    <div class="settings-section-label">Your interests (learned from clicks)</div>
+    <div id="interestSummary" style="font-size:0.78rem; color:var(--text-muted); line-height:1.6">
+      Keep reading articles to build your profile.
+    </div>
+  </div>
+  <div style="margin-top:1rem; font-size:0.72rem; color:var(--text-muted)">
     Changes apply immediately and are saved in your browser.
   </div>
 </div>
@@ -1192,12 +1228,32 @@ function saveInteractions(data) {{
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }}
 
-function trackClick(articleId, source) {{
+function extractKeywords(title) {{
+  const stop = new Set(["the","and","for","that","this","with","from","have",
+    "been","will","were","they","their","about","into","after","over","when",
+    "says","said","what","who","how","why","new","also","more","than","just"]);
+  return title.toLowerCase()
+    .replace(/[^a-z ]/g, " ")
+    .split(/ +/)
+    .filter(w => w.length >= 4 && !stop.has(w));
+}}
+
+function trackClick(articleId, source, title) {{
   const data = loadInteractions();
+  // Click count
   data.clicks = data.clicks || {{}};
   data.clicks[articleId] = (data.clicks[articleId] || 0) + 1;
-  data.sourceCounts = data.sourceCounts || {{}};
-  data.sourceCounts[source] = (data.sourceCounts[source] || 0) + 1;
+  // Source preference
+  data.source_scores = data.source_scores || {{}};
+  data.source_scores[source] = (data.source_scores[source] || 0) + 1;
+  // Keyword interest
+  data.keyword_scores = data.keyword_scores || {{}};
+  if (title) {{
+    extractKeywords(title).forEach(kw => {{
+      data.keyword_scores[kw] = (data.keyword_scores[kw] || 0) + 1;
+    }});
+  }}
+  data.read_count = (data.read_count || 0) + 1;
   saveInteractions(data);
 }}
 
@@ -1247,6 +1303,7 @@ function saveSettings(s) {{
 function openSettings() {{
   document.getElementById('settingsPanel').classList.add('open');
   document.getElementById('settingsOverlay').classList.add('open');
+  buildInterestSummary();
 }}
 
 function closeSettings() {{
@@ -1417,6 +1474,28 @@ async function submitFeedback() {{
   }} catch(e) {{
     alert('Could not send feedback — check your connection.');
   }}
+}}
+
+// ── Interest summary ─────────────────────────────────────────────────────
+function buildInterestSummary() {{
+  const el = document.getElementById('interestSummary');
+  if (!el) return;
+  const data = loadInteractions();
+  const reads = data.read_count || 0;
+  if (reads < 3) {{
+    el.textContent = 'Read a few more articles to build your profile.';
+    return;
+  }}
+  // Top sources
+  const sources = Object.entries(data.source_scores || {{}})
+    .sort((a,b) => b[1]-a[1]).slice(0,3).map(e => e[0]);
+  // Top keywords
+  const keywords = Object.entries(data.keyword_scores || {{}})
+    .sort((a,b) => b[1]-a[1]).slice(0,8).map(e => e[0]);
+  let html = '<strong>' + reads + ' articles read</strong><br>';
+  if (sources.length) html += '📰 Favourite sources: ' + sources.join(', ') + '<br>';
+  if (keywords.length) html += '🔑 Your interests: ' + keywords.join(', ');
+  el.innerHTML = html;
 }}
 
 // ── Active nav highlighting ───────────────────────────────────────────────
