@@ -368,22 +368,39 @@ Articles:
             data = r.json()
             text = data["content"][0]["text"].strip()
             # Strip markdown fences if present
-            text = text.strip("```json").strip("```").strip()
+            if text.startswith("```"):
+                text = text.split("```")[1]
+                if text.startswith("json"):
+                    text = text[4:]
+                text = text.strip()
+            if text.endswith("```"):
+                text = text[:-3].strip()
             results = json.loads(text)
+            # Ensure results is a list
+            if isinstance(results, dict):
+                results = [results]
             for article, result in zip(batch, results):
+                if not isinstance(result, dict):
+                    continue
                 topic = result.get("topic", "None")
                 summary = result.get("summary", "")
                 if summary:
                     article["summary"] = summary
                 if topic in classified:
                     classified[topic].append(article)
-                # else article goes to no topic (filtered out)
             print(f"  Classified batch {i//10 + 1}: {len(batch)} articles")
         except Exception as e:
             print(f"  Classification error (batch {i//10 + 1}): {e}")
-            # Fall back — put articles back into pool for keyword matching
-            return None, articles
+            import traceback
+            print(f"  Traceback: {traceback.format_exc()}")
+            # Don't fail entire classification on one bad batch - continue
+            continue
 
+    # If classification produced nothing at all, fall back to keywords
+    total_classified = sum(len(v) for v in classified.values())
+    if total_classified == 0:
+        print("  Classification produced no results - falling back to keywords")
+        return None, articles
     return classified, articles
 
 # ── Trending detection ────────────────────────────────────────────────────────
