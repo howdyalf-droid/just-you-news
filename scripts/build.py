@@ -482,9 +482,9 @@ def build_html(topic_articles, following_articles, trending, all_articles):
   --shadow: 0 2px 12px rgba(0,0,0,0.3);
 }}
 
-/* ── SCROLL OFFSET — accounts for sticky header ── */
+/* ── SCROLL OFFSET — set dynamically by JS ── */
 html {{
-  scroll-padding-top: 150px;
+  scroll-padding-top: 160px;
 }}
 
 /* ── RESET & BASE ── */
@@ -1205,8 +1205,14 @@ function openFeedback(articleId, title, currentTopic, url) {{
   currentFeedback = {{ articleId, title, currentTopic, url }};
   document.getElementById('modalArticleTitle').textContent = title + (currentTopic ? ' (in: ' + currentTopic + ')' : '');
   document.querySelectorAll('input[name="feedbackType"]').forEach(r => r.checked = false);
-  document.getElementById('topicRedirect').style.display = 'none';
-  document.getElementById('topicRedirect').value = '';
+  // Populate topic dropdown dynamically from TOPIC_DATA
+  const select = document.getElementById('topicRedirect');
+  select.style.display = 'none';
+  select.value = '';
+  // Rebuild options from current topic list
+  select.innerHTML = '<option value="">— Select correct topic (optional) —</option>' +
+    TOPIC_DATA.map(t => `<option value="${{t.name}}">${{t.name}}</option>`).join('') +
+    '<option value="none">None of my topics</option>';
   document.getElementById('feedbackOther').style.display = 'none';
   document.getElementById('feedbackOther').value = '';
   document.getElementById('feedbackModal').classList.add('open');
@@ -1330,6 +1336,17 @@ document.addEventListener('DOMContentLoaded', () => {{
 
   // Init nav highlighting
   initNavHighlighting();
+  // Dynamic scroll padding based on actual header height
+  function updateScrollPadding() {{
+    const header = document.querySelector('.site-header');
+    if (header) {{
+      const h = header.getBoundingClientRect().height;
+      document.documentElement.style.setProperty('scroll-padding-top', (h + 24) + 'px');
+    }}
+  }}
+  updateScrollPadding();
+  window.addEventListener('resize', updateScrollPadding);
+
   // Init settings
   buildSettingsRows();
   applyAllSettings();
