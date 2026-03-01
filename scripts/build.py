@@ -107,8 +107,19 @@ def fetch_feedback_blocklist():
         r = requests.get(url, headers=headers, params=params, timeout=10)
         issues = r.json()
         if not isinstance(issues, list):
-            return blocklist, redirects
+            print(f"  Feedback API returned unexpected format: {type(issues)}")
+            # Try fetching without label filter as fallback
+            params2 = {"state": "open", "per_page": 100}
+            r2 = requests.get(url, headers=headers, params=params2, timeout=10)
+            issues = r2.json()
+            if not isinstance(issues, list):
+                return blocklist, redirects
+        print(f"  Issues fetched: {len(issues)}")
         for issue in issues:
+            # Only process digest-feedback issues
+            issue_labels = [l.get("name", "") for l in issue.get("labels", [])]
+            if issue_labels and "digest-feedback" not in issue_labels:
+                continue
             body = issue.get("body", "")
             art_id = None
             blocked_topic = None
@@ -136,6 +147,10 @@ def fetch_feedback_blocklist():
                 if suggest_topic and suggest_topic not in ("none", ""):
                     redirects[art_id] = suggest_topic
         print(f"  Feedback: {len(blocklist)} blocked, {len(redirects)} redirected")
+        if blocklist:
+            print(f"  Blocked IDs: {list(blocklist.keys())[:5]}")
+        if redirects:
+            print(f"  Redirects: {dict(list(redirects.items())[:3])}")
     except Exception as e:
         print(f"  Feedback fetch error: {e}")
     return blocklist, redirects
