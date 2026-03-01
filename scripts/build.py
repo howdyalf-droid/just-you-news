@@ -1003,7 +1003,7 @@ appeared_in_topic: ${{currentFeedback.currentTopic}}
 
   try {{
     const resp = await fetch(
-      'https://digest-feedback.howdyalf-droid.workers.dev',
+      'https://deigest-feedback.howdyalf.workers.dev',
       {{
         method: 'POST',
         headers: {{
