@@ -323,7 +323,7 @@ def classify_and_summarise(articles, feedback_examples=None):
         )
 
         prompt = (
-            "You are classifying news articles for a personal news digest read by someone in Melbourne, Australia.\n\n"
+            "You are classifying news articles for a personal news digest read by someone in Melbourne, Australia.\n\nSOURCE RULES: Articles from WSJ or The Australian tagged as opinion, commentary, or editorial should be assigned \"None\" — the reader only wants news reporting from these sources, not opinion pieces.\n\n"
             "Available topics and what they cover:\n" + topic_descriptions + "\n\n"
             "USER FEEDBACK — learn from these past corrections and apply the same judgment to similar articles:\n" + examples_text + "\n\n"
             "STRICT RULES:\n"
