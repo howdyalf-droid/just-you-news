@@ -32,6 +32,12 @@ topics:
     color: "#2980b9"
     default_count: 5
 
+  - name: "Australian News"
+    keywords: ["Australia", "Australian", "Sydney", "Brisbane", "Perth", "Adelaide", "Hobart", "Darwin", "NSW", "Queensland", "Western Australia", "South Australia", "Tasmania", "Northern Territory", "ACCC", "ASIC", "High Court", "ABC", "SBS"]
+    guardian_sections: ["australia-news"]
+    color: "#148f77"
+    default_count: 5
+
   - name: "Melbourne & Victoria"
     keywords: ["Melbourne", "Victoria", "Victorian", "CFMEU", "Jacinta Allan", "AFL", "Yarra", "Docklands", "Southbank", "Geelong", "Ballarat", "Bendigo", "tram", "Metro Tunnel"]
     guardian_sections: ["australia-news"]
