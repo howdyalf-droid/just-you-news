@@ -91,14 +91,16 @@ def get_image(entry):
 
 def fetch_feedback_blocklist():
     """Read open GitHub Issues tagged 'digest-feedback'.
-    Returns (blocklist, redirects):
+    Returns (blocklist, redirects, examples):
       blocklist: article_id -> [topics to block from]
       redirects: article_id -> suggested correct topic
+      examples: list of {title, wrong_topic, correct_topic} for prompt injection
     """
     blocklist = {}
     redirects = {}
+    examples = []
     if not GITHUB_TOKEN:
-        return blocklist, redirects
+        return blocklist, redirects, examples
     try:
         headers = {
             "Authorization": f"Bearer {GITHUB_TOKEN}",
@@ -115,7 +117,7 @@ def fetch_feedback_blocklist():
             r2 = requests.get(url, headers=headers, params=params2, timeout=10)
             issues = r2.json()
             if not isinstance(issues, list):
-                return blocklist, redirects
+                return blocklist, redirects, examples
         print(f"  Issues fetched: {len(issues)}")
         for issue in issues:
             # Only process digest-feedback issues
@@ -139,6 +141,13 @@ def fetch_feedback_blocklist():
                         blocked_topic = val
                     elif field in ("suggest_topic", "suggested_topic"):
                         suggest_topic = val
+            # Extract article title from issue body for examples
+            title_match = _re.search(r'Article:[ ]*(.+?)(?:\n|$)', body)
+            article_title = title_match.group(1).strip() if title_match else None
+            # Clean markdown bold markers
+            if article_title:
+                article_title = article_title.replace("**", "").replace("__", "").strip()
+
             if art_id:
                 if art_id not in blocklist:
                     blocklist[art_id] = []
@@ -148,14 +157,26 @@ def fetch_feedback_blocklist():
                     blocklist[art_id].append("__all__")
                 if suggest_topic and suggest_topic not in ("none", ""):
                     redirects[art_id] = suggest_topic
-        print(f"  Feedback: {len(blocklist)} blocked, {len(redirects)} redirected")
+
+                # Build example for prompt injection
+                if article_title and blocked_topic and blocked_topic != "__all__":
+                    example = {
+                        "title": article_title,
+                        "wrong_topic": blocked_topic,
+                        "correct_topic": suggest_topic if suggest_topic and suggest_topic not in ("none", "") else "None"
+                    }
+                    # Avoid duplicate examples for same title
+                    if not any(e["title"] == article_title for e in examples):
+                        examples.append(example)
+
+        print(f"  Feedback: {len(blocklist)} blocked, {len(redirects)} redirected, {len(examples)} examples")
         if blocklist:
             print(f"  Blocked IDs: {list(blocklist.keys())[:5]}")
         if redirects:
             print(f"  Redirects: {dict(list(redirects.items())[:3])}")
     except Exception as e:
         print(f"  Feedback fetch error: {e}")
-    return blocklist, redirects
+    return blocklist, redirects, examples
 
 def create_feedback_label():
     """Ensure the digest-feedback label exists in the repo."""
@@ -258,11 +279,24 @@ def fetch_rss(source):
 
 # ── Claude Summarisation ──────────────────────────────────────────────────────
 
-def classify_and_summarise(articles):
+def classify_and_summarise(articles, feedback_examples=None):
     """Use Claude to classify articles into topics AND summarise them.
     Returns (topic_articles dict, updated articles list)."""
     if not ANTHROPIC_API_KEY:
         return None, articles
+
+    # Build feedback examples section for prompt
+    examples_text = ""
+    if feedback_examples:
+        lines = []
+        for ex in feedback_examples[:20]:  # cap at 20 to avoid token bloat
+            if ex["correct_topic"] and ex["correct_topic"] != "None":
+                lines.append(f'  - "{ex["title"]}" is NOT {ex["wrong_topic"]}, it belongs in {ex["correct_topic"]}')
+            else:
+                lines.append(f'  - "{ex["title"]}" does NOT belong in {ex["wrong_topic"]}')
+        examples_text = "\n".join(lines) if lines else "(none yet)"
+    else:
+        examples_text = "(none yet)"
 
     topic_names = [t["name"] for t in TOPICS]
     topic_descriptions = "\n".join(
@@ -281,14 +315,32 @@ def classify_and_summarise(articles):
             f'[{j+1}] TITLE: {a["title"]}\nSOURCE: {a.get("source","?")}\nDESCRIPTION: {a.get("summary", a.get("body",""))[:400]}'
             for j, a in enumerate(batch)
         )
-        prompt = f"""You are classifying news articles for a personal news digest.
+        prompt = f"""You are classifying news articles for a personal news digest read by someone in Melbourne, Australia.
 
-Available topics:
+Available topics and what they cover:
 {topic_descriptions}
 
-For each article below, return:
-1. Which topic it belongs to (must be exact topic name from the list, or "None" if it doesn't fit any)
-2. A {DIGEST.get("summary_sentences", 2)}-sentence summary
+USER FEEDBACK — learn from these past corrections and apply the same judgment to similar articles:
+{examples_text}
+
+STRICT RULES:
+- "Australian Politics" = only federal/state Australian political news. NOT international news that merely mentions Australia.
+- "Melbourne & Victoria" = only local Melbourne/Victorian news. NOT general Australian news.
+- "Australian News" = general Australian domestic stories not covered by the above two.
+- "Technology" = tech products, companies, software, hardware, cybersecurity. NOT general business or war news.
+- "Artificial Intelligence" = AI, machine learning, LLMs specifically. NOT general tech.
+- "Finance & Stocks" = markets, stocks, economy, business earnings. NOT war, conflict, or general world events even if they affect prices.
+- "Personal Finance" = mortgages, savings, superannuation, cost of living for individuals. NOT corporate finance or general economics.
+- "Environment & Climate" = environmental science, climate policy, conservation. NOT war or conflict even if it causes environmental damage.
+- "Arts & Culture" = art, theatre, books, cultural events. NOT news events with cultural angles.
+- "Music" = music industry, artists, concerts, albums. NOT news with music mentioned tangentially.
+- "Film & TV" = films, television, streaming. NOT news events with film/TV mentioned tangentially.
+- "Breaking News" = urgent breaking stories with immediate significance. Use sparingly.
+- "International News" = world events, geopolitics, foreign affairs that don't fit other categories.
+- Assign "None" if an article doesn't clearly fit any topic. It is better to assign None than to force a poor fit.
+- Each article gets exactly ONE topic — pick the most specific match.
+
+For each article, return a {DIGEST.get("summary_sentences", 2)}-sentence summary and the single best topic.
 
 Return ONLY a JSON array, one object per article, in order:
 [{{"topic": "Topic Name", "summary": "Summary text."}}, ...]
@@ -1450,23 +1502,26 @@ def main():
 
     # Load feedback blocklist from GitHub Issues
     create_feedback_label()
-    blocklist, redirects = fetch_feedback_blocklist()
+    blocklist, redirects, feedback_examples = fetch_feedback_blocklist()
 
     # Assign articles to topics — use Claude classification if API key available
     topic_articles = {}
     if ANTHROPIC_API_KEY:
         print("  Classifying articles with Claude...")
-        classified, all_articles = classify_and_summarise(all_articles)
+        classified, all_articles = classify_and_summarise(all_articles, feedback_examples)
     else:
         classified = None
 
     if classified is not None:
         # Claude classified — apply blocklist, score, deduplicate
+        # Track article IDs already assigned to prevent cross-topic duplicates
+        assigned_ids = set()
         for topic in TOPICS:
             matches = [
                 a for a in classified.get(topic["name"], [])
                 if topic["name"] not in blocklist.get(a["id"], [])
                 and "__all__" not in blocklist.get(a["id"], [])
+                and a["id"] not in assigned_ids
             ]
             matches.sort(key=lambda a: score_article(a, interactions), reverse=True)
             seen_titles = set()
@@ -1476,9 +1531,10 @@ def main():
                 if title_key not in seen_titles:
                     seen_titles.add(title_key)
                     deduped.append(a)
+                    assigned_ids.add(a["id"])
             count = topic.get("default_count", DIGEST.get("stories_per_topic", 5))
             topic_articles[topic["name"]] = deduped[:count]
-        print(f"  Classification complete")
+        print(f"  Classification complete — {len(assigned_ids)} articles assigned")
     else:
         # Fallback: keyword matching
         print("  Using keyword matching (no API key or classification failed)")
