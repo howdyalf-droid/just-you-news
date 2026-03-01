@@ -58,14 +58,16 @@ def is_recent(entry, hours=None):
 
 def matches_topic(text, topic):
     """Match article to topic. Requires at least one keyword match.
-    For short keyword lists, be stricter to avoid false positives."""
+    Respects exclude_keywords — any match there disqualifies the article."""
     text_lower = text.lower()
     keywords = topic["keywords"]
+
+    # Check exclusions first
+    exclude = topic.get("exclude_keywords", [])
+    if any(ex.lower() in text_lower for ex in exclude):
+        return False
+
     matches = sum(1 for kw in keywords if kw.lower() in text_lower)
-    # Topics with very general keywords need 2+ matches to reduce noise
-    general_topics = {"australian news", "aus news"}
-    if topic["name"].lower() in general_topics:
-        return matches >= 1
     return matches >= 1
 
 def get_image(entry):
