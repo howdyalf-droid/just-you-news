@@ -189,10 +189,6 @@ sources:
     country: "US"
 
 ## Melbourne & Local
-  - name: "The Age - Victoria"
-    url: "https://www.theage.com.au/rss/feed.xml"
-    country: "AU"
-
   - name: "9News Australia"
     url: "https://www.9news.com.au/rss"
     country: "AU"
@@ -204,6 +200,22 @@ sources:
   - name: "The Conversation"
     url: "https://theconversation.com/au/articles.atom"
     country: "AU"
+
+  - name: "Mother Jones"
+    url: "https://www.motherjones.com/feed/"
+    country: "US"
+
+  - name: "Vox"
+    url: "https://www.vox.com/rss/index.xml"
+    country: "US"
+
+  - name: "Al Jazeera English"
+    url: "https://www.aljazeera.com/xml/rss/all.xml"
+    country: "INT"
+
+  - name: "Slate"
+    url: "https://slate.com/feeds/all.rss"
+    country: "US"
 
 ## ADD MORE SOURCES BELOW:
 ## - name: "Source Name"
