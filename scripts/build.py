@@ -113,13 +113,19 @@ def fetch_feedback_blocklist():
             art_id = None
             blocked_topic = None
             suggest_topic = None
-            for line in body.split("\n"):
-                if line.startswith("article_id:"):
-                    art_id = line.split(":", 1)[1].strip()
-                if line.startswith("block_from_topic:"):
-                    blocked_topic = line.split(":", 1)[1].strip()
-                if line.startswith("suggest_topic:"):
-                    suggest_topic = line.split(":", 1)[1].strip()
+            # Handle both newline-separated and space-separated formats
+            import re as _re
+            for field in ["article_id", "block_from_topic", "suggest_topic", "suggested_topic", "appeared_in_topic"]:
+                pattern = field + r":\s*([^\s\n]+)"
+                match = _re.search(pattern, body)
+                if match:
+                    val = match.group(1).strip()
+                    if field == "article_id":
+                        art_id = val
+                    elif field == "block_from_topic":
+                        blocked_topic = val
+                    elif field in ("suggest_topic", "suggested_topic"):
+                        suggest_topic = val
             if art_id:
                 if art_id not in blocklist:
                     blocklist[art_id] = []
@@ -1256,40 +1262,17 @@ async function submitFeedback() {{
 
   if (feedbackType === 'wrong_topic') {{
     title = `[Wrong topic] ${{currentFeedback.title.substring(0, 60)}}`;
-    body = `**Article appeared in wrong topic section.**
-
-article_id: ${{currentFeedback.articleId}}
-appeared_in_topic: ${{currentFeedback.currentTopic}}
-block_from_topic: ${{currentFeedback.currentTopic}}
-${{redirectTopic && redirectTopic !== 'none' ? 'suggest_topic: ' + redirectTopic : ''}}
-
-**Article:** [${{currentFeedback.title}}](${{currentFeedback.url}})`;
+    const suggestLine = (redirectTopic && redirectTopic !== 'none') ? `\nsuggested_topic: ${{redirectTopic}}` : '';
+    body = `article_id: ${{currentFeedback.articleId}}\nappeared_in_topic: ${{currentFeedback.currentTopic}}\nblock_from_topic: ${{currentFeedback.currentTopic}}${{suggestLine}}\n\nArticle: ${{currentFeedback.title}}\n${{currentFeedback.url}}`;
   }} else if (feedbackType === 'not_relevant') {{
     title = `[Not relevant] ${{currentFeedback.title.substring(0, 60)}}`;
-    body = `**Article not relevant to any topic.**
-
-article_id: ${{currentFeedback.articleId}}
-block_from_topic: __all__
-
-**Article:** [${{currentFeedback.title}}](${{currentFeedback.url}})`;
+    body = `article_id: ${{currentFeedback.articleId}}\nblock_from_topic: __all__\n\nArticle: ${{currentFeedback.title}}\n${{currentFeedback.url}}`;
   }} else if (feedbackType === 'repetitive') {{
     title = `[Repetitive] ${{currentFeedback.title.substring(0, 60)}}`;
-    body = `**Article is too repetitive / already seen.**
-
-article_id: ${{currentFeedback.articleId}}
-block_from_topic: ${{currentFeedback.currentTopic}}
-
-**Article:** [${{currentFeedback.title}}](${{currentFeedback.url}})`;
+    body = `article_id: ${{currentFeedback.articleId}}\nblock_from_topic: ${{currentFeedback.currentTopic}}\n\nArticle: ${{currentFeedback.title}}\n${{currentFeedback.url}}`;
   }} else {{
     title = `[Feedback] ${{currentFeedback.title.substring(0, 60)}}`;
-    body = `**Other feedback.**
-
-article_id: ${{currentFeedback.articleId}}
-appeared_in_topic: ${{currentFeedback.currentTopic}}
-
-**Note:** ${{otherText}}
-
-**Article:** [${{currentFeedback.title}}](${{currentFeedback.url}})`;
+    body = `article_id: ${{currentFeedback.articleId}}\nappeared_in_topic: ${{currentFeedback.currentTopic}}\nnote: ${{otherText}}\n\nArticle: ${{currentFeedback.title}}\n${{currentFeedback.url}}`;
   }}
 
   try {{
