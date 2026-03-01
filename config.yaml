@@ -59,7 +59,7 @@ sources:
     country: "UK"
 
   - name: "NPR News"
-    url: "https://feeds.npr.org/1001/rss.xml"
+    url: "https://feeds.npr.org/1002/rss.xml"
     country: "US"
 
   - name: "The Guardian - World"
@@ -68,7 +68,12 @@ sources:
 
 ## WSJ (headlines only - full content requires login)
   - name: "WSJ - World News"
-    url: "https://feeds.content.dowjones.io/public/rss/mw_realtimeheadlines"
+    url: "https://feeds.content.dowjones.io/public/rss/RSSWorldNews"
+    country: "US"
+    headlines_only: true
+
+  - name: "WSJ - US Business"
+    url: "https://feeds.content.dowjones.io/public/rss/RSSBusiness"
     country: "US"
     headlines_only: true
 
