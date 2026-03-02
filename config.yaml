@@ -1,51 +1,46 @@
 ## ─────────────────────────────────────────────────
 ## NEWS DIGEST — CONFIG
-## Edit this file to customise your digest.
-## Changes take effect at the next scheduled refresh.
 ## ─────────────────────────────────────────────────
 
-## TOPICS
-## The order here is the order they appear on the page.
-## Add or remove topics freely.
 topics:
   - name: "Breaking News"
-    keywords: ["breaking", "urgent", "just in", "developing", "alert", "emergency", "crisis", "killed", "dead", "explosion", "attack", "disaster", "earthquake", "shooting", "crash"]
+    keywords: ["breaking", "urgent", "just in", "developing", "emergency", "crisis", "killed", "dead", "explosion", "attack", "disaster", "earthquake", "shooting", "crash"]
     guardian_sections: ["world"]
     color: "#e74c3c"
     default_count: 4
 
   - name: "International News"
-    keywords: ["international", "world news", "global", "United Nations", "NATO", "European Union", "China", "Russia", "Ukraine", "Middle East", "Gaza", "Israel", "India", "Japan", "Korea", "Africa", "Latin America", "war", "conflict", "ceasefire", "sanctions", "diplomacy"]
+    keywords: ["international", "world news", "global", "United Nations", "NATO", "European Union", "China", "Russia", "Ukraine", "Middle East", "Gaza", "Israel", "India", "Japan", "Africa", "Latin America", "war", "conflict", "ceasefire", "sanctions", "diplomacy"]
     guardian_sections: ["world", "global-development"]
     color: "#2c3e50"
     default_count: 6
 
   - name: "US Politics"
-    keywords: ["US politics", "Trump", "Congress", "Senate", "White House", "Democrat", "Republican", "Washington DC", "Supreme Court", "DOGE", "Elon Musk", "tariffs", "immigration", "federal"]
+    keywords: ["Trump", "Congress", "Senate", "White House", "Democrat", "Republican", "Washington DC", "Supreme Court", "DOGE", "Elon Musk", "tariffs", "immigration", "federal"]
     guardian_sections: ["us-news", "politics"]
     color: "#c0392b"
     default_count: 5
 
   - name: "Australian Politics"
-    keywords: ["Australian politics", "Labor", "Liberal", "Albanese", "Dutton", "parliament", "federal government", "Canberra", "Senate", "election", "Greens", "Teal", "Anthony Albanese", "Peter Dutton"]
+    keywords: ["Australian politics", "Labor", "Liberal", "Albanese", "Dutton", "parliament", "federal government", "Canberra", "election", "Greens", "Teal"]
     guardian_sections: ["australia-news"]
     color: "#2980b9"
     default_count: 5
 
   - name: "Australian News"
-    keywords: ["Australia", "Australian", "Sydney", "Brisbane", "Perth", "Adelaide", "Hobart", "Darwin", "NSW", "Queensland", "Western Australia", "South Australia", "Tasmania", "Northern Territory", "ACCC", "ASIC", "High Court", "ABC", "SBS"]
+    keywords: ["Australia", "Australian", "Sydney", "Brisbane", "Perth", "Adelaide", "NSW", "Queensland", "Western Australia", "South Australia", "ACCC", "High Court"]
     guardian_sections: ["australia-news"]
     color: "#148f77"
     default_count: 5
 
   - name: "Melbourne & Victoria"
-    keywords: ["Melbourne", "Victoria", "Victorian", "CFMEU", "Jacinta Allan", "AFL", "Yarra", "Docklands", "Southbank", "Geelong", "Ballarat", "Bendigo", "tram", "Metro Tunnel"]
+    keywords: ["Melbourne", "Victoria", "Victorian", "Jacinta Allan", "AFL", "Yarra", "Geelong", "Ballarat", "Bendigo", "tram", "Metro Tunnel"]
     guardian_sections: ["australia-news"]
     color: "#27ae60"
     default_count: 4
 
   - name: "Technology"
-    keywords: ["technology", "tech", "software", "hardware", "smartphone", "Apple", "Google", "Microsoft", "Samsung", "gadget", "app", "Silicon Valley", "startup", "cybersecurity", "hack", "data breach", "social media", "Meta", "Instagram", "TikTok"]
+    keywords: ["technology", "tech", "software", "hardware", "smartphone", "Apple", "Google", "Microsoft", "Samsung", "app", "Silicon Valley", "startup", "cybersecurity", "hack", "data breach", "social media", "Meta", "Instagram", "TikTok"]
     exclude_keywords: ["petrol", "fuel", "wildlife", "weather", "flood", "fire", "bushfire", "sport", "cricket", "football", "AFL"]
     guardian_sections: ["technology"]
     color: "#8e44ad"
@@ -53,7 +48,7 @@ topics:
 
   - name: "Artificial Intelligence"
     keywords: ["artificial intelligence", "machine learning", "ChatGPT", "OpenAI", "Anthropic", "large language model", "LLM", "deep learning", "generative AI", "neural network", "Google DeepMind", "Gemini", "Claude AI", "AI model", "AI safety", "AGI"]
-    exclude_keywords: ["petrol", "fuel", "wildlife", "weather", "climate", "sport", "cricket", "football", "AFL", "election", "housing", "mortgage", "flood", "fire", "bushfire", "shark", "snake", "spider"]
+    exclude_keywords: ["petrol", "fuel", "wildlife", "weather", "flood", "fire", "bushfire", "sport", "cricket", "football", "AFL"]
     guardian_sections: ["technology"]
     color: "#6c3483"
     default_count: 5
@@ -89,41 +84,12 @@ topics:
     default_count: 4
 
   - name: "Arts & Culture"
-    keywords: ["art", "culture", "exhibition", "gallery", "museum", "theatre", "dance", "opera", "literature", "book", "author", "novel", "poetry", "architecture", "design", "fashion", "photography", "sculpture", "NGV", "ACMI"]
+    keywords: ["art", "culture", "exhibition", "gallery", "museum", "theatre", "dance", "opera", "literature", "book", "author", "novel", "poetry", "architecture", "design", "photography", "sculpture", "NGV", "ACMI"]
     guardian_sections: ["artanddesign", "books", "stage", "culture"]
     color: "#7d6608"
     default_count: 4
 
-## SOURCES
 sources:
-  - name: "ABC News Australia"
-    url: "https://www.abc.net.au/news/feed/51120/rss.xml"
-    country: "AU"
-
-  - name: "ABC Australia - Politics"
-    url: "https://www.abc.net.au/news/feed/2206/rss.xml"
-    country: "AU"
-
-  - name: "BBC News"
-    url: "https://feeds.bbci.co.uk/news/rss.xml"
-    country: "UK"
-
-  - name: "BBC Business"
-    url: "https://feeds.bbci.co.uk/news/business/rss.xml"
-    country: "UK"
-
-  - name: "BBC Technology"
-    url: "https://feeds.bbci.co.uk/news/technology/rss.xml"
-    country: "UK"
-
-  - name: "BBC Entertainment & Arts"
-    url: "https://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml"
-    country: "UK"
-
-  - name: "NPR News"
-    url: "https://feeds.npr.org/1002/rss.xml"
-    country: "US"
-
   - name: "The Guardian - World"
     url: "https://www.theguardian.com/world/rss"
     country: "UK"
@@ -140,6 +106,22 @@ sources:
     url: "https://www.theguardian.com/culture/rss"
     country: "UK"
 
+  - name: "ABC News Australia"
+    url: "https://www.abc.net.au/news/feed/51120/rss.xml"
+    country: "AU"
+
+  - name: "Al Jazeera English"
+    url: "https://www.aljazeera.com/xml/rss/all.xml"
+    country: "INT"
+
+  - name: "Ars Technica"
+    url: "https://feeds.arstechnica.com/arstechnica/index"
+    country: "US"
+
+  - name: "Vox"
+    url: "https://www.vox.com/rss/index.xml"
+    country: "US"
+
   - name: "WSJ - World News"
     url: "https://feeds.content.dowjones.io/public/rss/RSSWorldNews"
     country: "US"
@@ -150,93 +132,19 @@ sources:
     country: "US"
     headlines_only: true
 
-  ## Tech & AI
-  - name: "Ars Technica"
-    url: "https://feeds.arstechnica.com/arstechnica/index"
-    country: "US"
-
-  - name: "The Verge"
-    url: "https://www.theverge.com/rss/index.xml"
-    country: "US"
-
-  - name: "Wired"
-    url: "https://www.wired.com/feed/rss"
-    country: "US"
-
-  - name: "TechCrunch"
-    url: "https://techcrunch.com/feed/"
-    country: "US"
-
-  ## Finance (free sources)
-  - name: "ABC Australia - Business"
-    url: "https://www.abc.net.au/news/feed/2942/rss.xml"
-    country: "AU"
-
-  - name: "BBC Business"
-    url: "https://feeds.bbci.co.uk/news/business/rss.xml"
-    country: "UK"
-
-  - name: "MarketWatch"
-    url: "https://feeds.content.dowjones.io/public/rss/mw_realtimeheadlines"
-    country: "US"
-
-  - name: "Investopedia News"
-    url: "https://www.investopedia.com/feedbuilder/feed/getfeed?feedName=rss_headline"
-    country: "US"
-
-  - name: "Yahoo Finance"
-    url: "https://finance.yahoo.com/news/rssindex"
-    country: "US"
-
-## Melbourne & Local
-  - name: "9News Australia"
-    url: "https://www.9news.com.au/rss"
-    country: "AU"
-
-  - name: "SBS News"
-    url: "https://www.sbs.com.au/news/feed"
-    country: "AU"
-
   - name: "The Conversation"
     url: "https://theconversation.com/au/articles.atom"
     country: "AU"
 
-  - name: "Mother Jones"
-    url: "https://www.motherjones.com/feed/"
-    country: "US"
-
-  - name: "Vox"
-    url: "https://www.vox.com/rss/index.xml"
-    country: "US"
-
-  - name: "Al Jazeera English"
-    url: "https://www.aljazeera.com/xml/rss/all.xml"
-    country: "INT"
-
-  - name: "Slate"
-    url: "https://slate.com/feeds/all.rss"
-    country: "US"
-
-## ADD MORE SOURCES BELOW:
-## - name: "Source Name"
-##   url: "https://example.com/feed.rss"
-##   country: "AU"
-
-## DIGEST SETTINGS
 digest:
   stories_per_topic: 5
-  summary_sentences: 3
+  summary_sentences: 2
   show_trending: true
   trending_min_sources: 2
-  max_article_age_hours: 24
+  max_article_age_hours: 36
 
-## FOLLOWING
 following: []
-## Example:
-## following:
-##   - "Erin Patterson mushroom trial"
 
-## APPEARANCE
 appearance:
   theme: "light"
   accent: "#1a1a2e"
