@@ -1630,15 +1630,33 @@ def main():
     # Load interaction scores
     interactions = load_interactions() if INTERACTIONS_PATH.exists() else {}
 
+    # ── Pre-filter: cap articles sent to Claude to control cost ──────────────
+    # Sort by recency first, then cap at MAX_ARTICLES_TO_CLASSIFY
+    MAX_ARTICLES_TO_CLASSIFY = 80
+    if len(all_articles) > MAX_ARTICLES_TO_CLASSIFY:
+        all_articles.sort(key=lambda a: a["date"], reverse=True)
+        all_articles = all_articles[:MAX_ARTICLES_TO_CLASSIFY]
+        print(f"  Pre-filtered to {MAX_ARTICLES_TO_CLASSIFY} most recent articles for classification")
+
     # Load feedback blocklist from GitHub Issues
     create_feedback_label()
     blocklist, redirects, feedback_examples = fetch_feedback_blocklist()
+
+    # Pre-filter: cap articles sent to Claude to control cost
+    # Sort by recency, keep freshest articles up to a cap
+    MAX_TO_CLASSIFY = 80
+    if len(all_articles) > MAX_TO_CLASSIFY:
+        all_articles_sorted = sorted(all_articles, key=lambda a: a["date"], reverse=True)
+        articles_to_classify = all_articles_sorted[:MAX_TO_CLASSIFY]
+        print(f"  Pre-filter: {len(all_articles)} → {len(articles_to_classify)} articles for classification")
+    else:
+        articles_to_classify = all_articles
 
     # Assign articles to topics — use Claude classification if API key available
     topic_articles = {}
     if ANTHROPIC_API_KEY:
         print("  Classifying articles with Claude...")
-        classified, all_articles = classify_and_summarise(all_articles, feedback_examples)
+        classified, articles_to_classify = classify_and_summarise(articles_to_classify, feedback_examples)
     else:
         classified = None
 
