@@ -1632,7 +1632,7 @@ def main():
 
     # ── Pre-filter: cap articles sent to Claude to control cost ──────────────
     # Sort by recency first, then cap at MAX_ARTICLES_TO_CLASSIFY
-    MAX_ARTICLES_TO_CLASSIFY = 80
+    MAX_ARTICLES_TO_CLASSIFY = 150
     if len(all_articles) > MAX_ARTICLES_TO_CLASSIFY:
         all_articles.sort(key=lambda a: a["date"], reverse=True)
         all_articles = all_articles[:MAX_ARTICLES_TO_CLASSIFY]
