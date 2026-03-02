@@ -340,7 +340,7 @@ def classify_and_summarise(articles, feedback_examples=None):
             '- "Film & TV" = films, television, streaming. NOT news events with film/TV mentioned tangentially.\n'
             '- "Breaking News" = major breaking stories: deaths, attacks, disasters, significant political events happening right now. Use for genuinely urgent news.\n'
             '- "International News" = world events, geopolitics, foreign affairs that do not fit other categories.\n'
-            "- Assign \"None\" if an article doesn\'t clearly fit any topic. It is better to assign None than to force a poor fit.\n"
+            "- Assign \"None\" ONLY for sport, celebrity gossip, or purely local news from another country. For everything else assign the closest matching topic — when in doubt, use International News or Australian News.\n"
             "- Each article gets exactly ONE topic — pick the most specific match.\n\n"
             "For each article, return a " + str(summary_sentences) + "-sentence summary and the single best topic.\n\n"
             "Return ONLY a JSON array, one object per article, in order:\n"
@@ -390,6 +390,9 @@ def classify_and_summarise(articles, feedback_examples=None):
             continue
 
     total_classified = sum(len(v) for v in classified.values())
+    for t, arts in classified.items():
+        if arts:
+            print("    " + t + ": " + str(len(arts)) + " articles")
     if total_classified == 0:
         print("  Classification produced no results - falling back to keywords")
         return None, articles
