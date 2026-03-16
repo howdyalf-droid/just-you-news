@@ -136,6 +136,34 @@ sources:
     url: "https://theconversation.com/au/articles.atom"
     country: "AU"
 
+  ## AI
+  - name: "MIT Technology Review"
+    url: "https://www.technologyreview.com/feed/"
+    country: "US"
+
+  ## Film / TV / Music / Arts
+  - name: "Pitchfork"
+    url: "https://pitchfork.com/rss/news/"
+    country: "US"
+
+  - name: "Vulture"
+    url: "https://www.vulture.com/rss/index.xml"
+    country: "US"
+
+  - name: "Time Out Melbourne"
+    url: "https://www.timeout.com/melbourne/rss"
+    country: "AU"
+
+  ## Personal Finance (AU)
+  - name: "Finder AU"
+    url: "https://www.finder.com.au/feed"
+    country: "AU"
+
+  ## Climate
+  - name: "Carbon Brief"
+    url: "https://www.carbonbrief.org/feed"
+    country: "UK"
+
 digest:
   stories_per_topic: 5
   summary_sentences: 2
