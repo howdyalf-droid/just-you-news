@@ -1633,16 +1633,55 @@ def main():
     # Load interaction scores
     interactions = load_interactions() if INTERACTIONS_PATH.exists() else {}
 
-    # Sort by recency first, then cap at MAX_ARTICLES_TO_CLASSIFY
-    MAX_ARTICLES_TO_CLASSIFY = 100
-    if len(all_articles) > MAX_ARTICLES_TO_CLASSIFY:
-        all_articles.sort(key=lambda a: a["date"], reverse=True)
-        all_articles = all_articles[:MAX_ARTICLES_TO_CLASSIFY]
-        print(f"  Pre-filtered to {MAX_ARTICLES_TO_CLASSIFY} most recent articles for classification")
-
     # Load feedback blocklist from GitHub Issues
     create_feedback_label()
     blocklist, redirects, feedback_examples = fetch_feedback_blocklist()
+
+    # Pre-filter: split sources into news and specialist tiers
+    # to ensure specialist topics (Tech, AI, Finance, Arts) always get coverage
+    NEWS_SOURCES = {
+        "The Guardian - World", "The Guardian - Australia",
+        "ABC News Australia", "Al Jazeera English", "Vox",
+        "WSJ - World News", "WSJ - US Business",
+    }
+    SPECIALIST_SOURCES = {
+        "The Guardian - Environment", "The Guardian - Culture",
+        "Ars Technica", "MIT Technology Review",
+        "Reuters Business", "Finder AU",
+        "Pitchfork", "Vulture", "Time Out Melbourne",
+        "Carbon Brief", "The Conversation",
+    }
+    MAX_PER_SOURCE = 12
+    NEWS_CAP = 50
+    SPECIALIST_CAP = 60
+
+    from collections import defaultdict
+    news_buckets = defaultdict(list)
+    specialist_buckets = defaultdict(list)
+
+    for a in sorted(all_articles, key=lambda a: a["date"], reverse=True):
+        source = a["source"]
+        if source in NEWS_SOURCES:
+            if len(news_buckets[source]) < MAX_PER_SOURCE:
+                news_buckets[source].append(a)
+        elif source in SPECIALIST_SOURCES:
+            if len(specialist_buckets[source]) < MAX_PER_SOURCE:
+                specialist_buckets[source].append(a)
+
+    news_articles = []
+    for arts in news_buckets.values():
+        news_articles.extend(arts)
+    news_articles.sort(key=lambda a: a["date"], reverse=True)
+    news_articles = news_articles[:NEWS_CAP]
+
+    specialist_articles = []
+    for arts in specialist_buckets.values():
+        specialist_articles.extend(arts)
+    specialist_articles.sort(key=lambda a: a["date"], reverse=True)
+    specialist_articles = specialist_articles[:SPECIALIST_CAP]
+
+    articles_to_classify = news_articles + specialist_articles
+    print(f"  Pre-filter: {len(all_articles)} total → {len(news_articles)} news + {len(specialist_articles)} specialist = {len(articles_to_classify)} for classification")
 
     # Assign articles to topics — use Claude classification if API key available
     topic_articles = {}
