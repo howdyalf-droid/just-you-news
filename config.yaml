@@ -132,8 +132,16 @@ sources:
     country: "US"
     headlines_only: true
 
-  - name: "Reuters Business"
-    url: "https://feeds.reuters.com/reuters/businessNews"
+  - name: "Reuters World"
+    url: "https://feeds.reuters.com/Reuters/worldNews"
+    country: "US"
+
+  - name: "Reuters Finance"
+    url: "https://feeds.reuters.com/reuters/financialNews"
+    country: "US"
+
+  - name: "CNBC Finance"
+    url: "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664"
     country: "US"
 
   - name: "The Conversation"
@@ -152,6 +160,14 @@ sources:
 
   - name: "Vulture"
     url: "https://www.vulture.com/rss/index.xml"
+    country: "US"
+
+  - name: "AP Entertainment"
+    url: "https://feeds.apnews.com/rss/apf-entertainment"
+    country: "US"
+
+  - name: "AP Technology"
+    url: "https://feeds.apnews.com/rss/apf-technology"
     country: "US"
 
   - name: "Time Out Melbourne"
