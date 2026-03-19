@@ -323,26 +323,31 @@ def classify_and_summarise(articles, feedback_examples=None):
         )
 
         prompt = (
-            "You are classifying news articles for a personal news digest read by someone in Melbourne, Australia.\n\nSOURCE RULES: Articles from WSJ or The Australian tagged as opinion, commentary, or editorial should be assigned \"None\" — the reader only wants news reporting from these sources, not opinion pieces.\n\n"
-            "Available topics and what they cover:\n" + topic_descriptions + "\n\n"
-            "USER FEEDBACK — learn from these past corrections and apply the same judgment to similar articles:\n" + examples_text + "\n\n"
-            "STRICT RULES:\n"
-            '- "Australian Politics" = only federal/state Australian political news. NOT international news that merely mentions Australia.\n'
-            '- "Melbourne & Victoria" = only local Melbourne/Victorian news. NOT general Australian news.\n'
-            '- "Australian News" = general Australian domestic stories not covered by the above two.\n'
-            '- "Technology" = tech products, companies, software, hardware, cybersecurity. NOT general business or war news.\n'
-            '- "Artificial Intelligence" = AI, machine learning, LLMs specifically. NOT general tech.\n'
-            '- "Finance & Stocks" = markets, stocks, economy, business earnings. NOT war, conflict, or general world events even if they affect prices.\n'
-            '- "Personal Finance" = mortgages, savings, superannuation, cost of living for individuals. NOT corporate finance or general economics.\n'
-            '- "Environment & Climate" = environmental science, climate policy, conservation. NOT war or conflict even if it causes environmental damage.\n'
-            '- "Arts & Culture" = art, theatre, books, cultural events. NOT news events with cultural angles.\n'
-            '- "Music" = music industry, artists, concerts, albums. NOT news with music mentioned tangentially.\n'
-            '- "Film & TV" = films, television, streaming. NOT news events with film/TV mentioned tangentially.\n'
-            '- "Breaking News" = major breaking stories: deaths, attacks, disasters, significant political events happening right now. Use for genuinely urgent news.\n'
-            '- "International News" = ONLY geopolitics, diplomacy, wars, foreign elections, international relations. NOT stories fitting Technology, Finance, Environment, Arts, Music, or Film & TV — assign those to their specific topic instead.\n'
-            "- Assign \"None\" ONLY for: sport scores/results, celebrity gossip unrelated to arts, or purely local news from a non-English-speaking country with no broader relevance.\n""- Do NOT use International News as a catch-all. Only use it for geopolitics, foreign affairs, and world events that don't fit a more specific topic.\n""- Personal Finance stories must be relevant to Australian readers (mortgages, superannuation, cost of living, Australian tax). US-specific personal finance (401k, social security, US tax) = None.\n""- Environment & Climate includes any story about climate science, emissions, conservation, wildlife, renewable energy — assign these here, not International News.\n""- Music, Film & TV, Arts & Culture: assign any story about artists, albums, films, exhibitions, books here rather than International News.\n"
-            "- Each article gets exactly ONE topic — pick the most specific match.\n\n"
-            "For each article, return a " + str(summary_sentences) + "-sentence summary and the single best topic.\n\n"
+            "You are classifying news articles for a personal news digest for a reader in Melbourne, Australia.\n\n"
+            "Available topics:\n" + topic_descriptions + "\n\n"
+            "USER FEEDBACK — past corrections to learn from:\n" + examples_text + "\n\n"
+            "CLASSIFICATION RULES:\n"
+            "1. BREAKING NEWS: Active wars, major attacks, mass casualty events, significant crises happening NOW. The Iran conflict belongs here.\n"
+            "2. INTERNATIONAL NEWS: Geopolitics, diplomacy, foreign policy. War analysis/background after the initial breaking story.\n"
+            "3. US POLITICS: Trump, Congress, White House, US government, US elections, DOGE.\n"
+            "4. AUSTRALIAN POLITICS: Federal/state Australian government, ALP, Liberal, Greens, parliament, Albanese, Dutton.\n"
+            "5. AUSTRALIAN NEWS: Australian domestic stories not covered by politics above.\n"
+            "6. MELBOURNE & VICTORIA: Stories specifically about Melbourne or Victoria.\n"
+            "7. TECHNOLOGY: Tech products, companies, software, hardware, cybersecurity, social media.\n"
+            "8. ARTIFICIAL INTELLIGENCE: AI models, LLMs, OpenAI, Anthropic, Google DeepMind, AI research, AI regulation.\n"
+            "9. FINANCE & STOCKS: Stock markets, ASX, S&P500, earnings, interest rates, RBA, Fed, banking, commodities.\n"
+            "10. PERSONAL FINANCE: Mortgages, superannuation, cost of living, household budgets, Australian tax. Australian context only.\n"
+            "11. ENVIRONMENT & CLIMATE: Climate science, emissions policy, conservation, renewable energy, wildlife, extreme weather.\n"
+            "12. FILM & TV: Movies, TV shows, streaming, Oscars, Emmys, box office, reviews, casting. Oscar season stories go here.\n"
+            "13. MUSIC: Albums, artists, concerts, tours, festivals, Grammy, ARIA, music industry.\n"
+            "14. ARTS & CULTURE: Art exhibitions, theatre, books, dance, opera, architecture. Include major international events.\n"
+            "\nKEY RULES:\n"
+            "- Assign None ONLY for sport scores, reality TV gossip, or purely local news from non-English-speaking countries with no broader relevance.\n"
+            "- Do NOT overuse International News. If a story fits Technology, Finance, Environment, Film, Music or Arts, use that specific topic.\n"
+            "- WSJ or The Australian opinion/editorial pieces = None.\n"
+            "- US-specific personal finance (401k, social security, US tax) = None.\n"
+            "- Each article gets exactly ONE topic.\n\n"
+            "For each article return a " + str(summary_sentences) + "-sentence summary and the best topic.\n\n"
             "Return ONLY a JSON array, one object per article, in order:\n"
             '[{"topic": "Topic Name", "summary": "Summary text."}, ...]\n\n'
             "No preamble, no markdown fences, just the JSON array.\n\n"
