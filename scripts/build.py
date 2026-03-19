@@ -1645,15 +1645,21 @@ def main():
     create_feedback_label()
     blocklist, redirects, feedback_examples = fetch_feedback_blocklist()
 
-    # Pre-filter: cap articles sent to Claude to control cost
-    # Sort by recency, keep freshest articles up to a cap
-    MAX_TO_CLASSIFY = 300
-    if len(all_articles) > MAX_TO_CLASSIFY:
-        all_articles_sorted = sorted(all_articles, key=lambda a: a["date"], reverse=True)
-        articles_to_classify = all_articles_sorted[:MAX_TO_CLASSIFY]
-        print(f"  Pre-filter: {len(all_articles)} → {len(articles_to_classify)} articles for classification")
-    else:
-        articles_to_classify = all_articles
+    # Pre-filter: take up to 20 articles per source (freshest first),
+    # then cap total at 200 — ensures all sources get fair representation
+    MAX_PER_SOURCE = 20
+    MAX_TO_CLASSIFY = 200
+    from collections import defaultdict
+    source_buckets = defaultdict(list)
+    for a in sorted(all_articles, key=lambda a: a["date"], reverse=True):
+        if len(source_buckets[a["source"]]) < MAX_PER_SOURCE:
+            source_buckets[a["source"]].append(a)
+    articles_to_classify = []
+    for arts in source_buckets.values():
+        articles_to_classify.extend(arts)
+    articles_to_classify.sort(key=lambda a: a["date"], reverse=True)
+    articles_to_classify = articles_to_classify[:MAX_TO_CLASSIFY]
+    print(f"  Pre-filter: {len(all_articles)} → {len(articles_to_classify)} articles across {len(source_buckets)} sources")
 
     # Assign articles to topics — use Claude classification if API key available
     topic_articles = {}
