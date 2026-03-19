@@ -1635,7 +1635,7 @@ def main():
 
     # ── Pre-filter: cap articles sent to Claude to control cost ──────────────
     # Sort by recency first, then cap at MAX_ARTICLES_TO_CLASSIFY
-    MAX_ARTICLES_TO_CLASSIFY = 300
+    MAX_ARTICLES_TO_CLASSIFY = 100
     if len(all_articles) > MAX_ARTICLES_TO_CLASSIFY:
         all_articles.sort(key=lambda a: a["date"], reverse=True)
         all_articles = all_articles[:MAX_ARTICLES_TO_CLASSIFY]
@@ -1645,10 +1645,10 @@ def main():
     create_feedback_label()
     blocklist, redirects, feedback_examples = fetch_feedback_blocklist()
 
-    # Pre-filter: take up to 20 articles per source (freshest first),
-    # then cap total at 200 — ensures all sources get fair representation
-    MAX_PER_SOURCE = 20
-    MAX_TO_CLASSIFY = 200
+    # Pre-filter: take up to 12 articles per source (freshest first),
+    # then cap total at 100 — ensures all sources get fair representation
+    MAX_PER_SOURCE = 12
+    MAX_TO_CLASSIFY = 100
     from collections import defaultdict
     source_buckets = defaultdict(list)
     for a in sorted(all_articles, key=lambda a: a["date"], reverse=True):
