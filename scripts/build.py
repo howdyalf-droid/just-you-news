@@ -339,7 +339,7 @@ def classify_and_summarise(articles, feedback_examples=None):
             '- "Music" = music industry, artists, concerts, albums. NOT news with music mentioned tangentially.\n'
             '- "Film & TV" = films, television, streaming. NOT news events with film/TV mentioned tangentially.\n'
             '- "Breaking News" = major breaking stories: deaths, attacks, disasters, significant political events happening right now. Use for genuinely urgent news.\n'
-            '- "International News" = world events, geopolitics, foreign affairs that do not fit other categories.\n'
+            '- "International News" = ONLY geopolitics, diplomacy, wars, foreign elections, international relations. NOT stories fitting Technology, Finance, Environment, Arts, Music, or Film & TV — assign those to their specific topic instead.\n'
             "- Assign \"None\" ONLY for: sport scores/results, celebrity gossip unrelated to arts, or purely local news from a non-English-speaking country with no broader relevance.\n""- Do NOT use International News as a catch-all. Only use it for geopolitics, foreign affairs, and world events that don't fit a more specific topic.\n""- Personal Finance stories must be relevant to Australian readers (mortgages, superannuation, cost of living, Australian tax). US-specific personal finance (401k, social security, US tax) = None.\n""- Environment & Climate includes any story about climate science, emissions, conservation, wildlife, renewable energy — assign these here, not International News.\n""- Music, Film & TV, Arts & Culture: assign any story about artists, albums, films, exhibitions, books here rather than International News.\n"
             "- Each article gets exactly ONE topic — pick the most specific match.\n\n"
             "For each article, return a " + str(summary_sentences) + "-sentence summary and the single best topic.\n\n"
@@ -1647,9 +1647,10 @@ def main():
     SPECIALIST_SOURCES = {
         "The Guardian - Environment", "The Guardian - Culture",
         "Ars Technica", "MIT Technology Review",
-        "Reuters Business", "Finder AU",
-        "Pitchfork", "Vulture", "Time Out Melbourne",
-        "Carbon Brief", "The Conversation",
+        "Reuters World", "Reuters Finance", "CNBC Finance",
+        "Finder AU", "Pitchfork", "Vulture",
+        "AP Entertainment", "AP Technology",
+        "Time Out Melbourne", "Carbon Brief", "The Conversation",
     }
     MAX_PER_SOURCE = 12
     NEWS_CAP = 50
