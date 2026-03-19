@@ -132,6 +132,10 @@ sources:
     country: "US"
     headlines_only: true
 
+  - name: "Reuters Business"
+    url: "https://feeds.reuters.com/reuters/businessNews"
+    country: "US"
+
   - name: "The Conversation"
     url: "https://theconversation.com/au/articles.atom"
     country: "AU"
