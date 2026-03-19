@@ -1633,7 +1633,6 @@ def main():
     # Load interaction scores
     interactions = load_interactions() if INTERACTIONS_PATH.exists() else {}
 
-    # ── Pre-filter: cap articles sent to Claude to control cost ──────────────
     # Sort by recency first, then cap at MAX_ARTICLES_TO_CLASSIFY
     MAX_ARTICLES_TO_CLASSIFY = 100
     if len(all_articles) > MAX_ARTICLES_TO_CLASSIFY:
@@ -1644,22 +1643,6 @@ def main():
     # Load feedback blocklist from GitHub Issues
     create_feedback_label()
     blocklist, redirects, feedback_examples = fetch_feedback_blocklist()
-
-    # Pre-filter: take up to 12 articles per source (freshest first),
-    # then cap total at 100 — ensures all sources get fair representation
-    MAX_PER_SOURCE = 12
-    MAX_TO_CLASSIFY = 100
-    from collections import defaultdict
-    source_buckets = defaultdict(list)
-    for a in sorted(all_articles, key=lambda a: a["date"], reverse=True):
-        if len(source_buckets[a["source"]]) < MAX_PER_SOURCE:
-            source_buckets[a["source"]].append(a)
-    articles_to_classify = []
-    for arts in source_buckets.values():
-        articles_to_classify.extend(arts)
-    articles_to_classify.sort(key=lambda a: a["date"], reverse=True)
-    articles_to_classify = articles_to_classify[:MAX_TO_CLASSIFY]
-    print(f"  Pre-filter: {len(all_articles)} → {len(articles_to_classify)} articles across {len(source_buckets)} sources")
 
     # Assign articles to topics — use Claude classification if API key available
     topic_articles = {}
