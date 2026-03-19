@@ -1647,7 +1647,7 @@ def main():
 
     # Pre-filter: cap articles sent to Claude to control cost
     # Sort by recency, keep freshest articles up to a cap
-    MAX_TO_CLASSIFY = 80
+    MAX_TO_CLASSIFY = 300
     if len(all_articles) > MAX_TO_CLASSIFY:
         all_articles_sorted = sorted(all_articles, key=lambda a: a["date"], reverse=True)
         articles_to_classify = all_articles_sorted[:MAX_TO_CLASSIFY]
